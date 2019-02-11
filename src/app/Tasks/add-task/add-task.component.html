@@ -1,0 +1,70 @@
+<div class="container table-responsive">
+  <h2 class="well">{{ pageTitle }}</h2>
+  <br />
+  <table class="table table-borderless">
+    <tr class="row">
+      <th class="col-sm-2">Task Name</th>
+      <td class="col">
+        <input type="text" name="taskName" class="form-control col-sm-4" [(ngModel)]="newTask.TaskName" placeholder="Enter a task Name"  required />
+      </td>
+    </tr>
+    <tr class="row">
+      <th class="col-sm-2">Parent Task</th>
+      <td class="col">
+        <select name="parent" id="inputparent" class="form-control col-sm-4" [(ngModel)]="newTask.ParentTaskId" placeholder="--select--">
+          <option [ngValue]=null selected>-- Select One --</option>
+          <option *ngFor="let item of parents" [ngValue]="item.TaskId">{{item.TaskName}}</option>
+        </select>
+      </td>
+    </tr>
+    <tr class="row">
+      <th class="col-sm-2">Priority</th>
+      <td class="col">
+        <input type="range" name="priority" class="form-control col-sm-4" [(ngModel)]="newTask.Priority"
+          min="1" max="30" step="1" required [title]="newTask.Priority" />
+      </td>
+    </tr>
+    <tr class="row">
+      <th class="col-sm-2">Task Start date</th>
+      <td class="col">
+        <input type="date" name="startdate" class="form-control col-sm-4"
+        [ngModel]="newTask.StartDate | date: 'yyyy-MM-dd'" required (ngModelChange)="newTask.StartDate = $event"/>
+      </td>
+    </tr>
+    <tr class="row">
+      <th class="col-sm-2">Task End date</th>
+      <td class="col">
+        <input type="date" name="endDate" class="form-control col-sm-4"
+        [ngModel]="newTask.EndDate | date: 'yyyy-MM-dd'" required (ngModelChange)="newTask.EndDate = $event"/>
+      </td>
+    </tr>
+    <tr class="row">
+      <td class="col" colspan="2">
+        <div class="container text-center">
+          <button type="submit" class="btn btn-primary" (click)="AddTasks();">{{taskId === 0 ? 'Save' : 'Update'}}</button>&nbsp;&nbsp;&nbsp;&nbsp;
+          <button type="reset" class="btn btn-secondary" (click)="ClearOrBack();">{{taskId === 0 ? 'Clear' : 'Back'}}</button>
+        </div>
+      </td>
+    </tr>
+  </table>
+    <div class="alert alert-danger" name="errorMsg">Error occured while saving !</div>
+    <div class="alert alert-success" name="successMsg"></div>
+    <!-- <div class="modal modal-dialog">
+      <div name="successStatus" class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" aria-label="Close" ng-click="dismiss()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Saved successfully !</h4>
+        </div>
+        <div class="modal-body" name="ModalBody">
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" focus-element="autofocus" type="button" ng-click="successCallback()">
+            OK
+          </button>
+        </div>
+      </div>
+    </div> -->
+  <!-- {{ newTask | json }} -->
+</div>

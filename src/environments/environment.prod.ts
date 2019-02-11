@@ -1,3 +1,5 @@
 export const environment = {
-  production: true
+  production: true,
+  ApiBaseUrl: 'http://localhost/ProjectManager/api/',
+  PageSize: 5,
 };
