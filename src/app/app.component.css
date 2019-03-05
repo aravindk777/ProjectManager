@@ -1,0 +1,7 @@
+.fixed-header {
+  position: fixed;
+  top: 100;
+  left: 0;
+  width: 100%  !important;
+
+}

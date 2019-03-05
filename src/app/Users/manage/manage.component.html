@@ -1,3 +1,42 @@
-<p>
-  manage works!
-</p>
+<h2 mat-dialog-title>{{this.user.Id === '' || this.user.Id === undefined ? 'Create a new User': 'Editing User ' + user.UserId}}</h2>
+<mat-dialog-content>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>User details</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <form class="user-form-window">
+          <table style="width: 100%" cellspacing="10">
+            <tr>
+              <td>
+                <mat-form-field>
+                  <mat-label>First Name</mat-label>
+                  <input matInput placeholder="First Name" [(ngModel)]="user.FirstName" name="FirstName" required>
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field>
+                  <mat-label>Last Name</mat-label>
+                  <input matInput placeholder="Last Name" [(ngModel)]="user.LastName" name="LastName" required>
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field>
+                  <mat-label>User Id</mat-label>
+                  <input matInput placeholder="User Id" [(ngModel)]="user.UserId" name="UserId" required>
+                </mat-form-field>
+              </td>
+            </tr>
+          </table>
+        </form>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button (click)="SaveUser()"><mat-icon>save</mat-icon></button>
+      <button mat-button (click)="closeDialog();"><mat-icon>cancel</mat-icon></button>
+    </mat-card-actions>
+  </mat-card>
+</mat-dialog-content>

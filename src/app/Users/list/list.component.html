@@ -1,3 +1,34 @@
-<p>
-  list works!
-</p>
+
+<button mat-raised-button (click)="AddUser()" color="primary"><mat-icon>add</mat-icon></button>
+<mat-card class="card user-card" *ngFor="let user of AllUsers;" >
+  <mat-card-header>
+    <mat-card-title>{{user.FullName}}</mat-card-title>
+    <mat-card-subtitle>@ {{user.UserId}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content class="mat-background-warn">
+    <table>
+      <tr class="row-1">
+        <td><b>First Name</b></td>
+        <td>{{user.FirstName}}</td>
+      </tr>
+
+      <tr class="row-1">
+          <td><b>Last Name</b></td>
+          <td>{{user.LastName}}</td>
+      </tr>
+
+        <tr class="row-1">
+            <td colspan=2>
+              <ng-container *ngIf="user.Active; else inactive">
+                  Status <mat-icon>person_add</mat-icon>
+              </ng-container>
+                <ng-template #inactive>Status <mat-icon>person_add_disabled</mat-icon></ng-template>
+            </td>
+          </tr>
+    </table>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button color="primary" class="button-space" (click)="EditUser(user);"><mat-icon>edit</mat-icon></button>
+    <button mat-button color="primary" class="button-space"><mat-icon>delete</mat-icon></button>
+  </mat-card-actions>
+</mat-card>

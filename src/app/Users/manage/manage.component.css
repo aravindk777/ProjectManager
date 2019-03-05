@@ -1,0 +1,6 @@
+.user-form-window {
+  max-width: 50pc;
+  margin: 15px;
+  display: flex;
+  flex-direction: column;
+}
