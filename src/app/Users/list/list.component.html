@@ -1,34 +1,83 @@
+<mat-toolbar class="mat-active" layout="row" fxLayoutAlign="start" layout-padding style="height: 100px; vertical-align: middle">
+  <mat-toolbar-row style="height: 100%;">
 
-<button mat-raised-button (click)="AddUser()" color="primary"><mat-icon>add</mat-icon></button>
-<mat-card class="card user-card" *ngFor="let user of AllUsers;" >
-  <mat-card-header>
-    <mat-card-title>{{user.FullName}}</mat-card-title>
-    <mat-card-subtitle>@ {{user.UserId}}</mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content class="mat-background-warn">
-    <table>
+    <button mat-raised-button color="primary" (click)="AddUser()"><mat-icon>add</mat-icon> Add New</button>
+    <mat-divider class="vertical-divider"></mat-divider>
+
+    <mat-slide-toggle [(ngModel)]="activeOnly" (cdkAutofill)="GetAllUsers();" (change)="GetAllUsers();" style="margin-left: 20px;"
+    (toggleChange)="GetAllUsers();" aria-label="Active Only">Active Only</mat-slide-toggle>
+    <mat-divider class="vertical-divider"></mat-divider>
+
+    <span class="tlbSpacer"></span>
+    <mat-form-field style="max-width: 500px; width: 500px;">
+      <input matInput placeholder="Search" type="text" width="250px" [(ngModel)]="searchKeyword">
+    </mat-form-field>
+    <button button="submit" mat-raised-button color="active" style="margin-left: 10px;" (click)="Search()">Search</button>
+
+    <span class="tlbSpacer"></span>
+    <span class="tlbSpacer"></span>
+    <span class="tlbSpacer"></span>
+    <span class="tlbSpacer"></span>
+    Sort by:&nbsp;
+    <mat-radio-group [(ngModel)]="sortParam" (change)="Sort()">
+      <mat-radio-button value="FirstName">First Name</mat-radio-button>&nbsp;
+      <mat-radio-button value="LastName">Last Name</mat-radio-button>&nbsp;
+      <mat-radio-button value="UserId">User Id</mat-radio-button>
+    </mat-radio-group>
+
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<div style="vertical-align: middle; text-align: center;align-content: center; height: 50px;" [style.display]="loadingInProgress ? 'block' : 'none'" color="warn">
+  <!-- <mat-spinner [style.display]="loadingInProgress ? 'block' : 'none'"></mat-spinner> -->
+  <mat-progress-bar mode="query" [style.display]="loadingInProgress ? 'block' : 'none'" color="warn"></mat-progress-bar>
+</div>
+
+<div fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.25%" fxLayoutAlign="left">
+<mat-card class="user-card" *ngFor="let user of AllUsers;">
+<ng-container *ngIf="user.Active; else inactiveTitle">
+<mat-card-header>
+  <mat-card-title fxLayout.gt-xs="row" fxLayout.xs="column">
+        {{user.FullName}}
+  </mat-card-title>
+  <mat-card-subtitle>
+    @ {{user.UserId}}
+  </mat-card-subtitle>
+</mat-card-header>
+</ng-container>
+<ng-template #inactiveTitle>
+  <mat-card-header class="disabled">
+      <mat-card-title>
+          <i>{{user.FullName}} (<strong>Inactive</strong>)</i>
+      </mat-card-title>
+      <mat-card-subtitle>@ {{user.UserId}}</mat-card-subtitle>
+    </mat-card-header>
+</ng-template>
+<mat-card-content>
+  <table>
+    <tr class="row-1">
+      <td><b>First Name</b></td>
+      <td>{{user.FirstName}}</td>
+    </tr>
+
+    <tr class="row-1">
+        <td><b>Last Name</b></td>
+        <td>{{user.LastName}}</td>
+    </tr>
+
       <tr class="row-1">
-        <td><b>First Name</b></td>
-        <td>{{user.FirstName}}</td>
-      </tr>
-
-      <tr class="row-1">
-          <td><b>Last Name</b></td>
-          <td>{{user.LastName}}</td>
-      </tr>
-
-        <tr class="row-1">
-            <td colspan=2>
-              <ng-container *ngIf="user.Active; else inactive">
-                  Status <mat-icon>person_add</mat-icon>
-              </ng-container>
-                <ng-template #inactive>Status <mat-icon>person_add_disabled</mat-icon></ng-template>
-            </td>
-          </tr>
-    </table>
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-button color="primary" class="button-space" (click)="EditUser(user);"><mat-icon>edit</mat-icon></button>
-    <button mat-button color="primary" class="button-space"><mat-icon>delete</mat-icon></button>
-  </mat-card-actions>
+          <td colspan=2>
+            <ng-container *ngIf="user.Active; else inactiveUserIcon">
+                Status <mat-icon>person_add</mat-icon> Active
+            </ng-container>
+              <ng-template #inactiveUserIcon>Status <mat-icon>person_add_disabled</mat-icon> Inactive</ng-template>
+          </td>
+        </tr>
+  </table>
+</mat-card-content>
+<mat-card-actions align='end'>
+  <button mat-button color="primary" [disabled]="!user.Active" class="button-space" (click)="EditUser(user);"><mat-icon>edit</mat-icon> EDIT</button>
+  <button mat-button color="primary" [disabled]="!user.Active" class="button-space" (click)="RemoveUser(user.UserId);"><mat-icon>delete</mat-icon> REMOVE</button>
+</mat-card-actions>
 </mat-card>
+</div>

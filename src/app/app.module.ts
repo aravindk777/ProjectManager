@@ -21,6 +21,7 @@ import { ListUserComponent } from './Users/list/listuser.component';
 import { ManageUserComponent } from './Users/manage/manageuser.component';
 import { ListProjectsComponent } from './Projects/list-projects/list-projects.component';
 import { EditProjectComponent } from './Projects/edit-project/edit-project.component';
+import { AlertsComponent } from './common/alerts.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { EditProjectComponent } from './Projects/edit-project/edit-project.compo
     ManageUserComponent,
     ListUserComponent,
     ListProjectsComponent,
-    EditProjectComponent
+    EditProjectComponent,
+    AlertsComponent
   ],
   imports: [
     FormsModule,
@@ -41,7 +43,7 @@ import { EditProjectComponent } from './Projects/edit-project/edit-project.compo
     BrowserAnimationsModule,
     AppRoutingModule
   ],
-  entryComponents: [ManageUserComponent],
+  entryComponents: [ManageUserComponent, AlertsComponent],
   providers: [
     HealthService,
     TasksService,

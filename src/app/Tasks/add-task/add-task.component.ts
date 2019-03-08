@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TasksService } from 'src/services/tasks.service';
 import { ViewTasks } from 'src/Model/Tasks/view-tasks.model';
-import * as jQuery from 'jquery';
+// import * as jQuery from 'jquery';
 import { Task } from 'src/Model/Tasks/task.model';
 
 @Component({
@@ -58,8 +58,8 @@ export class AddTaskComponent implements OnInit {
           // Get parent tasks for drop down
           this.GetParentTasks(this.taskId);
 
-          jQuery('[name="successMsg"]').hide();
-          jQuery('[name="errorMsg"]').hide();
+          //jQuery('[name="successMsg"]').hide();
+          //jQuery('[name="errorMsg"]').hide();
         });
   }
 
@@ -85,9 +85,9 @@ export class AddTaskComponent implements OnInit {
         if (result) {
           // alert('Updated successfully!');
           this.saveStatus = 1;
-          jQuery('[name="successMsg"]').show();
-          jQuery('[name="successMsg"]').html('Task updated successfully. You will be automatically redirected to View page...');
-          jQuery('[name="successMsg"]').fadeIn(100);
+          // jQuery('[name="successMsg"]').show();
+          // jQuery('[name="successMsg"]').html('Task updated successfully. You will be automatically redirected to View page...');
+          // jQuery('[name="successMsg"]').fadeIn(100);
           setTimeout(() => {
             this._router.navigate(['/ViewTask']);
           }, 2000);
@@ -101,9 +101,9 @@ export class AddTaskComponent implements OnInit {
          // console.log('Saved successfully');
          // alert('Saved successfully!');
          this.saveStatus = 1;
-         jQuery('[name="successMsg"]').show();
-         jQuery('[name="successMsg"]').html('Task Created successfully. You will be automatically redirected to View page...');
-         jQuery('[name="successMsg"]').fadeIn(100);
+        //  jQuery('[name="successMsg"]').show();
+        //  jQuery('[name="successMsg"]').html('Task Created successfully. You will be automatically redirected to View page...');
+        //  jQuery('[name="successMsg"]').fadeIn(100);
           setTimeout(() => {
             this._router.navigate(['/ViewTask']);
           }, 2000);
@@ -114,10 +114,10 @@ export class AddTaskComponent implements OnInit {
     error => {
       console.log('Error: ' + JSON.stringify(<any>error));
       this.saveStatus = -1;
-      jQuery('[name="successMsg"]').hide();
-      jQuery('[name="errorMsg"]').show();
+      // jQuery('[name="successMsg"]').hide();
+      // jQuery('[name="errorMsg"]').show();
           setTimeout(() => {
-            jQuery('[name="errorMsg"]').fadeOut();
+            // jQuery('[name="errorMsg"]').fadeOut();
           }, 3000);
       // window.location.reload();
     }

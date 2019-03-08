@@ -1,7 +1,29 @@
 /* You can add global styles to this file, and also import other style files */
-@import "../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css";
-@import "~bootstrap/dist/css/bootstrap.min.css";
-/* @import "~font-awesome/css/font-awesome.min.css"; */
+@import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body, .body-like-bg {
+  margin: 0;
+  background-color: darkgray;
+  font-family: "Helvetica Neue", sans-serif;
+}
+
+html, body {
+  height: 100%;
+}
+
+.button-space {
+  margin: 5px;
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+.vertical-divider {
+  border-top-width: 0;
+  border-right-width: 0px;
+  border-right-style: solid;
+  border-right-color: darkgrey;
+  margin-left: 20x;
+  height: 80%;
+}

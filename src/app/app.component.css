@@ -3,5 +3,9 @@
   top: 100;
   left: 0;
   width: 100%  !important;
+}
 
+.expanded-toolbar {
+  /* justify-content: space-between; */
+  align-items: center;
 }

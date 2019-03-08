@@ -1,8 +1,8 @@
 .user-card {
-  max-width: 300px;
+  max-width: 200px;
   margin: 15px;
 }
 
-.button-space {
-  margin: 5px;
+.tlbSpacer {
+  margin-left: 20px;
 }
