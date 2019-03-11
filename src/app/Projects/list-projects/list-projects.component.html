@@ -1,3 +1,88 @@
-<p>
-  list-projects works!
-</p>
+<mat-toolbar class="mat-active" layout="row" fxLayoutAlign="start" layout-padding style="height: 100px; vertical-align: middle">
+  <mat-toolbar-row style="height: 100%;">
+
+    <button mat-raised-button color="primary" (click)="AddNew()"><mat-icon>add</mat-icon> Add New</button>
+    <mat-divider class="vertical-divider"></mat-divider>
+
+    <!-- <mat-slide-toggle [(ngModel)]="activeOnly" (cdkAutofill)="GetAllUsers();" (change)="GetAllUsers();" style="margin-left: 20px;"
+    (toggleChange)="GetAllUsers();" aria-label="Active Only" ngDefaultControl>Active Only</mat-slide-toggle> -->
+    <mat-divider class="vertical-divider"></mat-divider>
+
+    <span class="tlbSpacer"></span>
+    <!-- <mat-form-field style="max-width: 500px; width: 500px;">
+      <input matInput name="searchUser" placeholder="Search" type="text" width="250px" [(ngModel)]="searchKeyword" ngDefaultControl>
+    </mat-form-field>
+    <button button="submit" mat-raised-button color="active" style="margin-left: 10px;" (click)="Search()">Search</button> -->
+
+    <span class="tlbSpacer"></span>
+    <span class="tlbSpacer"></span>
+    <span class="tlbSpacer"></span>
+    <span class="tlbSpacer"></span>
+    <!-- Sort by:&nbsp;
+    <mat-radio-group [(ngModel)]="sortParam" (change)="Sort()" ngDefaultControl>
+      <mat-radio-button value="FirstName">First Name</mat-radio-button>&nbsp;
+      <mat-radio-button value="LastName">Last Name</mat-radio-button>&nbsp;
+      <mat-radio-button value="UserId">User Id</mat-radio-button>
+    </mat-radio-group> -->
+
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<div style="vertical-align: middle; text-align: center;align-content: center; height: 50px;" [style.display]="loadingInProgress ? 'block' : 'none'" color="warn">
+  <mat-progress-bar mode="query" [style.display]="loadingInProgress ? 'block' : 'none'" color="warn"></mat-progress-bar>
+  <span>Loading...</span>
+</div>
+
+<mat-accordion class="root-card-wrapper">
+  <!-- <mat-card class="user-card">
+    <mat-card-content>
+      <mat-form-field>
+        <button matButton style="width: 50%;height: 50%;">
+          <mat-icon>add</mat-icon>
+        </button>
+      </mat-form-field>
+    </mat-card-content>
+  </mat-card> -->
+
+  <mat-card class="project-card" *ngFor="let project of AllProjects;">
+  <ng-container *ngIf="project.IsActive; else inactiveTitle">
+  <mat-card-header fxLayout="column" fxLayoutAlign="center center">
+    <mat-card-title>
+          {{project.ProjectName}}
+    </mat-card-title>
+    <mat-card-subtitle>
+      Project Manager: {{project.ManagerName}}
+    </mat-card-subtitle>
+  </mat-card-header>
+  </ng-container>
+  <ng-template #inactiveTitle>
+    <mat-card-header class="disabled" fxLayout="column" fxLayoutAlign="center center">
+        <mat-card-title>
+            <i>{{project.ProjectName}} (<strong>Inactive</strong>)</i>
+        </mat-card-title>
+        <mat-card-subtitle>was managed by {{project.ManagerName}}</mat-card-subtitle>
+      </mat-card-header>
+  </ng-template>
+  <mat-card-content fxLayout="column" fxLayoutAlign="center center">
+    <table style="width: 100%;">
+      <tr>
+        <td><b>Total Tasks</b></td>
+        <td>#</td>
+        <td><b>Completed</b></td>
+        <td>#</td>
+      </tr>
+
+      <tr>
+          <td><b>Start Date</b></td>
+          <td>{{project.ProjectStart | date:'shortDate'}}</td>
+          <td><b>End Date</b></td>
+          <td>{{project.ProjectEnd | date:'shortDate'}}</td>
+      </tr>
+    </table>
+  </mat-card-content>
+  <mat-card-actions fxLayout="row" fxLayoutAlign="center center">
+    <button mat-button class="btn-bordered" color="primary" class="button-space"><mat-icon>edit</mat-icon> UPDATE</button>
+    <button mat-button class="btn-bordered" color="warn" [disabled]="!project.IsActive" class="button-space"><mat-icon>delete</mat-icon> COMPLETE</button>
+  </mat-card-actions>
+  </mat-card>
+</mat-accordion>

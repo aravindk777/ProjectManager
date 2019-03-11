@@ -7,8 +7,10 @@ import {MatCardModule } from '@angular/material/card';
 import {
   MatSidenavModule, MatToolbarModule, MatIconModule, MatButtonModule, MatListModule, MatTableModule,
   MatInputModule, MatCheckboxModule, MatDialogModule, MatProgressSpinnerModule, MatSnackBarModule,
-  MatSlideToggleModule, MatProgressBarModule
+  MatSlideToggleModule, MatProgressBarModule, MatSelectModule, MatSliderModule, MatFormFieldModule
 } from '@angular/material';
+
+import {MatExpansionModule} from '@angular/material/expansion';
 
 import { MatRadioModule } from '@angular/material/radio';
 
@@ -19,33 +21,17 @@ import { MatRadioModule } from '@angular/material/radio';
   declarations: [],
   imports: [
     CommonModule, MatCardModule, MatTableModule, MatButtonModule, MatSidenavModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatListModule,
-    MatInputModule,
-    MatCheckboxModule,
-    MatDialogModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule,
-    FlexLayoutModule,
-    MatSlideToggleModule, MatProgressBarModule, MatRadioModule
+    MatToolbarModule, MatIconModule, MatListModule, MatInputModule, MatFormFieldModule,
+    MatCheckboxModule, MatDialogModule, MatProgressSpinnerModule, MatSnackBarModule,
+    FlexLayoutModule, MatSliderModule, MatExpansionModule,
+    MatSlideToggleModule, MatProgressBarModule, MatRadioModule, MatSelectModule
   ],
   exports: [
-    CommonModule,
-    MatCardModule,
-    MatTableModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatListModule,
-    MatInputModule,
-    MatCheckboxModule,
-    MatDialogModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule,
-    FlexLayoutModule,
-    MatSlideToggleModule, MatProgressBarModule, MatRadioModule
+    CommonModule, MatCardModule, MatTableModule, MatButtonModule,
+    MatSidenavModule, MatToolbarModule, MatIconModule, MatListModule,
+    MatInputModule, MatFormFieldModule, MatCheckboxModule, MatDialogModule,
+    MatProgressSpinnerModule, MatSnackBarModule, FlexLayoutModule, MatSliderModule,
+    MatSlideToggleModule, MatProgressBarModule, MatRadioModule, MatSelectModule, MatExpansionModule
   ]
 })
 export class RunnerModule { }

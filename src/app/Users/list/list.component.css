@@ -1,6 +1,25 @@
 .user-card {
-  max-width: 200px;
+  width: 250px;
+  height: 200px;
   margin: 15px;
+}
+
+.tlb-fields {
+  font-size: 14px;
+}
+
+.tlb-fields:hover {
+  color: burlywood;
+}
+
+.btn-custom:hover {
+  background-color: darkslateblue;
+}
+
+.btn-bordered:hover {
+  border-style: dotted;
+  border-width: 0.10px 0.20px 0.10px 0.20px;
+  border-color: lightgray;
 }
 
 .tlbSpacer {

@@ -9,8 +9,6 @@ import { RunnerModule } from './runner.module';
 import { AppRoutingModule } from './routing/app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-/* Application Services */
-import { TasksService } from 'src/services/tasks.service';
 import { HealthService } from 'src/services/health.service';
 
 /* Application components and modules */
@@ -43,10 +41,9 @@ import { AlertsComponent } from './common/alerts.component';
     BrowserAnimationsModule,
     AppRoutingModule
   ],
-  entryComponents: [ManageUserComponent, AlertsComponent],
+  entryComponents: [ManageUserComponent, AlertsComponent, EditProjectComponent],
   providers: [
-    HealthService,
-    TasksService,
+    HealthService
   ],
   bootstrap: [AppComponent]
 })

@@ -9,3 +9,9 @@
   /* justify-content: space-between; */
   align-items: center;
 }
+
+.menu_button:hover {
+  /* background-color: darkmagenta; */
+  border-width: 0 0 0.15pc 0;
+  border-style: none none inset none;
+}

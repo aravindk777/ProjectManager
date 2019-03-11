@@ -3,7 +3,7 @@ import { TestBed, inject } from '@angular/core/testing';
 import { TasksService } from './tasks.service';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { ViewTasks } from 'src/Model/Tasks/view-tasks.model';
-import { of, Observable } from 'rxjs';
+import { of } from 'rxjs';
 
 describe('TasksService', () => {
   let ParentTasks: ViewTasks[];

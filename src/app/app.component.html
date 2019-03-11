@@ -1,12 +1,12 @@
 <mat-toolbar color="primary" class="expanded-toolbar">
   <span>
-      <button mat-button routerLink="/"><h1>{{title}}</h1></button>
+      <button mat-button routerLink="/"><h1>{{title.split(' ')[0]}} <strong>{{title.split(' ')[1]}}</strong></h1></button>
     </span>
   <!-- <mat-toolbar-row> -->
-    <button mat-button [routerLink]="['/home']" routerLinkActive="active"><mat-icon>home</mat-icon> Home</button>
-    <button mat-button [routerLink]="['/Projects']">Projects</button>
-    <button mat-button [routerLink]="['/ViewTask']">Tasks</button>
-    <button mat-button [routerLink]="['/users']">Users</button>
+    <button class="menu_button" mat-button [routerLink]="['/home']" routerLinkActive="active"><mat-icon>home</mat-icon> Home</button>
+    <button class="menu_button" mat-button [routerLink]="['/Projects']"><mat-icon>next_week</mat-icon> Projects</button>
+    <button class="menu_button" mat-button [routerLink]="['/ViewTask']"><mat-icon>assignment</mat-icon> Tasks</button>
+    <button class="menu_button" mat-button [routerLink]="['/users']"><mat-icon>people</mat-icon> Users</button>
   <!-- </mat-toolbar-row> -->
 </mat-toolbar>
 

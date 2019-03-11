@@ -8,17 +8,15 @@ import { AlertInfo } from 'src/Model/common/alert-info.model';
   styleUrls: ['./alerts.component.css']
 })
 export class AlertsComponent implements OnInit {
-  alertData: AlertInfo;
 
   constructor(
     private dialogRef: MatDialogRef<AlertsComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public alertInfo?: AlertInfo
   ) {
-    this.alertData = alertInfo;
     console.log('Alert Data: ' + JSON.stringify(alertInfo));
-    if (this.alertData.ConfirmPopup) {
-      this.alertData.Header = 'Confirm ?';
-    } else { this.alertData.Header = 'Alert'; }
+    if (alertInfo.ConfirmPopup) {
+      alertInfo.Header = 'Confirm ?';
+    } else { alertInfo.Header = 'Alert'; }
     this.dialogRef.disableClose = true;
   }
 

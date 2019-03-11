@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from 'src/Model/Users/user.Model';
 import { UserService } from 'src/services/user.service';
-import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ManageUserComponent } from '../manage/manageuser.component';
-import { Observable } from 'rxjs';
 import { AlertsComponent } from 'src/app/common/alerts.component';
 import { AlertInfo } from 'src/Model/common/alert-info.model';
 
@@ -18,7 +16,13 @@ export class ListUserComponent implements OnInit {
   AllUsers: User[];
   alertData: AlertInfo;
   loadingInProgress = true;
-  activeOnly = false;
+  _activeOnly = false;
+get activeOnly(): boolean {return this._activeOnly;}
+set activeOnly(value: boolean) {
+  this._activeOnly = value;
+  this.GetAllUsers(value);
+}
+
   sortParam = '';
 
   _searchKeyword: string;
@@ -27,26 +31,24 @@ export class ListUserComponent implements OnInit {
     if (value !== '') {
     this._searchKeyword = value;
     this.Search(value);
-    } else { this.GetAllUsers(); }
+    } else { this.GetAllUsers(this.activeOnly); }
   }
 
   constructor(
-    private route: Router,
     private userApi: UserService,
-    private activatedRoute: ActivatedRoute,
     private useraddeditDialog: MatDialog,
     private alertDialog: MatDialog
   ) {
   }
 
   ngOnInit() {
-    this.GetAllUsers();
+    this.GetAllUsers(false);
   }
 
-  GetAllUsers(): void {
+  GetAllUsers(active: boolean): void {
     this.loadingInProgress = true;
     console.log('Get all users is invoked to show activeonly ?' + this.activeOnly);
-    if(this.activeOnly) {
+    if (active) {
       this.userApi.GetActiveUsers()
     .subscribe(users => {this.AllUsers = users;
       if (this.AllUsers === undefined || this.AllUsers.length === 0) {
@@ -81,8 +83,8 @@ export class ListUserComponent implements OnInit {
     const diagRef = this.useraddeditDialog.open(ManageUserComponent, this.DialogSettings());
     diagRef.afterClosed().subscribe(data => {
       console.log('status after closure: ' + data);
-      if(<boolean>data) {
-        this.GetAllUsers();
+      if (<boolean>data) {
+        this.GetAllUsers(this.activeOnly);
       }
     });
   }
@@ -92,8 +94,8 @@ export class ListUserComponent implements OnInit {
     const diagRef = this.useraddeditDialog.open(ManageUserComponent, this.DialogSettings(userToEdit));
     diagRef.afterClosed().subscribe(data => {
       console.log('status after closure: ' + data);
-      if(<boolean>data) {
-        this.GetAllUsers();
+      if (<boolean>data) {
+        this.GetAllUsers(this.activeOnly);
       }
     });
   }
@@ -104,10 +106,10 @@ export class ListUserComponent implements OnInit {
     this.alertData.Body = 'Are you sure to remove this user [' + userId + '] ?';
     const diagRef = this.alertDialog.open(AlertsComponent, this.DialogSettings(this.alertData, typeof this.alertData));
     diagRef.afterClosed().subscribe(resp => {
-      if(<Boolean> resp) {
+      if (<Boolean> resp) {
         this.userApi.RemoveUser(userId).subscribe(result => {
-          if(result) {
-            this.GetAllUsers();
+          if (result) {
+            this.GetAllUsers(this.activeOnly);
           }});
       }
     });
