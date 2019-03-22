@@ -5,6 +5,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ManageUserComponent } from '../manage/manageuser.component';
 import { AlertsComponent } from 'src/app/common/alerts.component';
 import { AlertInfo } from 'src/Model/common/alert-info.model';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
 
 @Component({
   selector: 'app-list-user',
@@ -37,7 +38,8 @@ set activeOnly(value: boolean) {
   constructor(
     private userApi: UserService,
     private useraddeditDialog: MatDialog,
-    private alertDialog: MatDialog
+    private alertDialog: MatDialog,
+    private notificationBar: MatSnackBar
   ) {
   }
 
@@ -47,23 +49,41 @@ set activeOnly(value: boolean) {
 
   GetAllUsers(active: boolean): void {
     this.loadingInProgress = true;
+
     console.log('Get all users is invoked to show activeonly ?' + this.activeOnly);
     if (active) {
       this.userApi.GetActiveUsers()
-    .subscribe(users => {this.AllUsers = users;
-      if (this.AllUsers === undefined || this.AllUsers.length === 0) {
+    .subscribe(
+      users => {
+        this.AllUsers = users;
+        if (this.AllUsers === undefined || this.AllUsers.length === 0) {
         // do nothing for now.
-      }
+        }
       this.loadingInProgress = false;
-    });
+      },
+      err => {
+        console.log('err: ' + err + '\ntype is: ' + typeof err);
+        this.loadingInProgress = false;
+        this.notificationBar.open('Error while trying to load data - ' + err, 'Dismiss', {duration: 5000});
+      }
+    );
     } else {
     this.userApi.GetUsers()
     .subscribe(users => {this.AllUsers = users;
       if (this.AllUsers === undefined || this.AllUsers.length === 0) {
         // do nothing for now.
+        // console.log('no data yielded from DB');
+      } else {
+        // console.log('Users available: ', this.AllUsers.length);
       }
       this.loadingInProgress = false;
+    },
+    err => {
+      this.loadingInProgress = false;
+      this.notificationBar.open('Error while trying to load data - ' + err.statusText + '\n' + err.message, 'Dismiss',
+      this.GetNotificationSettings());
     });
+    // console.log('what is AllUsers now? ', this.AllUsers);
   }
   }
 
@@ -77,6 +97,16 @@ set activeOnly(value: boolean) {
     dialogConfig.data = data;
     console.log('dialog data is ' + JSON.stringify(data));
     return dialogConfig;
+  }
+
+  GetNotificationSettings(): MatSnackBarConfig {
+    const notificationSettings = new MatSnackBarConfig();
+    notificationSettings.panelClass = 'snackBarNotifications';
+    notificationSettings.duration = 5000;
+    notificationSettings.politeness = 'assertive';
+    notificationSettings.horizontalPosition= 'center';
+    notificationSettings.verticalPosition = 'top';
+    return notificationSettings;
   }
 
   public AddUser() {

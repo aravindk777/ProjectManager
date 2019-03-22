@@ -18,8 +18,9 @@ export class UserService {
   // Get All Users
   GetUsers(): Observable<User[]> {
     const result = this.http.get<User[]>(usersUrl, {headers: HEADERS})
-                  // .pipe(tap(data => console.log(data)))
+                  // .pipe(tap(data => console.log('data is:' + data)))
                   ;
+    console.log('result is: ' + JSON.stringify(result));
     return result;
   }
 

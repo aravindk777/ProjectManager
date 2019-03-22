@@ -45,7 +45,7 @@ describe('AlertsComponent', () => {
     set: {
       entryComponents: [AlertsComponent]
     }
-  })
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AlertsComponent);

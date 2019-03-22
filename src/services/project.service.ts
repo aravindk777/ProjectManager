@@ -29,4 +29,16 @@ export class ProjectService {
     const editProjUrl = projectApiEndPoint + '/' + project.ProjectId;
     return this.http.put<boolean>(editProjUrl, project, {headers: HEADERS});
   }
+
+  // Get Project By Id
+  Get(id: number): Observable<Projects> {
+    const getProjRoute = projectApiEndPoint + '/' + id;
+    return this.http.get<Projects>(getProjRoute, {headers: HEADERS});
+  }
+
+  // Remove Project by ID
+  Delete(projId: number): Observable<boolean> {
+    const deleteRoute = projectApiEndPoint + '/' + projId + '/End';
+    return this.http.post<boolean>(deleteRoute, {headers: HEADERS});
+  }
 }

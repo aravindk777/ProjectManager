@@ -13,11 +13,12 @@ export class AlertsComponent implements OnInit {
     private dialogRef: MatDialogRef<AlertsComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public alertInfo?: AlertInfo
   ) {
-    console.log('Alert Data: ' + JSON.stringify(alertInfo));
+    // console.log('Alert Data: ' + JSON.stringify(alertInfo));
     if (alertInfo.ConfirmPopup) {
       alertInfo.Header = 'Confirm ?';
     } else { alertInfo.Header = 'Alert'; }
     this.dialogRef.disableClose = true;
+    // this.alertInfo.Body = this.alertInfo.Body.replace('\n', '<br/>');
   }
 
   ngOnInit() {

@@ -1,18 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~@angular/material/prebuilt-themes/pink-bluegrey.css";
 
-body, .body-like-bg {
+/* body, .body-like-bg {
   margin: 0;
   background-color: darkgray;
   font-family: "Helvetica Neue", sans-serif;
-}
+} */
 
 html, body {
+  margin: 0;
   height: 100%;
+  /* background-color: $brand-primary; */
 }
 
 .button-space {
   margin: 5px;
+}
+
+.snackBarNotifications {
+  background-color: black;
+  margin-top: 40%;
+  color: antiquewhite;
 }
 
 h1, h2 {

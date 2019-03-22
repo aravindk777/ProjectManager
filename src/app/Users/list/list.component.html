@@ -39,7 +39,7 @@
       </mat-form-field>
     </mat-card-content>
   </mat-card> -->
-
+<!-- <ng-template *ngIf="AllUsers !== undefined && AllUsers.length > 0;else noConnection"> -->
   <mat-card class="user-card" *ngFor="let user of AllUsers;">
   <ng-container *ngIf="user.Active; else inactiveTitle">
   <mat-card-header>
@@ -86,5 +86,12 @@
     <button mat-button class="btn-bordered" color="warn" [disabled]="!user.Active" class="button-space" (click)="RemoveUser(user.UserId);"><mat-icon>delete</mat-icon> REMOVE</button>
   </mat-card-actions>
   </mat-card>
+<!-- </ng-template>
+<ng-template #noConnection>
+  <div>
+    <mat-icon>signal_cellular_connected_no_internet_0_bar</mat-icon>
+    &nbsp;WE'RE SORRY THAT WE ARE EXPERIENCING DIFFICULTIES IN LOADING THE INFORMATION AT THIS TIME. PLEASE TRY AGAIN LATER.
+  </div>
+</ng-template> -->
 </mat-accordion>
 <!-- </div> -->

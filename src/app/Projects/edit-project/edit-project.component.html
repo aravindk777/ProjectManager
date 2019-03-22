@@ -1,6 +1,6 @@
 <div>
   <mat-accordion>
-  <h2 mat-dialog-title>{{this.projectToSave.ProjectId === 0 || this.projectToSave.ProjectId === undefined ? 'Create a new Project': 'Editing Project - ' + this.projectToSave.ProjectId}}</h2>
+  <h2 mat-dialog-title>{{this.projectToSave.ProjectId === 0 || this.projectToSave.ProjectId === undefined ? 'Create a new Project': 'Editing Project - "' + this.projectToSave.ProjectName + '"'}}</h2>
   <mat-dialog-content>
     <mat-card class="card proj-card ">
       <mat-card-header>
@@ -67,7 +67,7 @@
                     <mat-accordion>
                       <mat-form-field class="project-field-width">
                         <mat-label>Project Start date</mat-label>
-                        <input matInput type="date" placeholder="Start date" [ngModel]="projectToSave.ProjectStart" name="startDate"
+                        <input matInput type="date" placeholder="Start date" [ngModel]="projectToSave.ProjectStart | date: 'yyyy-MM-dd'" name="startDate"
                         (ngModelChange)="projectToSave.ProjectStart = $event">
                       </mat-form-field>
                       <mat-form-field class="project-field-width">
@@ -92,7 +92,7 @@
           <!-- {{this.projectToSave | json }} -->
       </mat-card-content>
       <mat-card-actions>
-        <button color="primary" mat-stroked-button (click)="Save()" [disabled]="workInProgress"><mat-icon>save</mat-icon> SAVE</button>
+        <button color="primary" mat-button (click)="Save()" [disabled]="workInProgress"><mat-icon>save</mat-icon> SAVE</button>
         <button mat-button (click)="cancelDialog();"><mat-icon>cancel</mat-icon> CANCEL</button>
       </mat-card-actions>
     </mat-card>

@@ -22,12 +22,12 @@ export class EditProjectComponent implements OnInit {
     private userSvc: UserService,
     @Optional() @Inject(MAT_DIALOG_DATA) public projectToEdit?: Projects
   ) {
+    this.GetActiveUsersList();
     if (projectToEdit === null || projectToEdit === undefined) {
       this.projectToSave = new Projects();
-      this.GetActiveUsers('');
     } else {
+      console.log(JSON.stringify(projectToEdit));
       this.projectToSave = projectToEdit;
-      this.GetActiveUsers(projectToEdit.ManagerId);
     }
   }
 
@@ -81,11 +81,11 @@ export class EditProjectComponent implements OnInit {
   }
   }
 
-  GetActiveUsers(_id: string): void {
-    console.log('Going to get all active users except ' + _id);
+  GetActiveUsersList(): void {
+    console.log('Going to get all active users');
     this.userSvc.GetActiveUsers()
     .subscribe(data => {
-      this.activeUsers = data.filter(usrs => usrs.Id !== _id);
+      this.activeUsers = data;
       console.log('Active users fetched: ' + this.activeUsers.length);
     });
   }

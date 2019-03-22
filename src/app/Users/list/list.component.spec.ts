@@ -4,7 +4,7 @@ import { ListUserComponent } from './listuser.component';
 import { User } from 'src/Model/Users/user.Model';
 import { UserService } from 'src/services/user.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatSnackBar } from '@angular/material';
 import { of } from 'rxjs';
 import { ManageUserComponent } from '../manage/manageuser.component';
 import { AlertsComponent } from 'src/app/common/alerts.component';
@@ -14,6 +14,7 @@ describe('ListComponent', () => {
   let fixture: ComponentFixture<ListUserComponent>;
   let mockUserService;
   let mockMatAddEditDialog: MatDialog, mockAlertDialog: MatDialog;
+  let mockMatSnackBar: MatSnackBar;
   let mockUsersList: User[];
 
   @Component({
@@ -46,6 +47,9 @@ describe('ListComponent', () => {
     {'Open': of(AlertsComponent, of(MatDialogConfig))}
   ]);
 
+  // mock the MatSnackbar component
+  mockMatSnackBar = jasmine.createSpyObj('notificationBar', [{'Open': of()}]);
+
   beforeEach(() => {
     mockUserService = jasmine.createSpyObj(UserService.name, [
       'AddUser',
@@ -65,6 +69,7 @@ describe('ListComponent', () => {
         {provide: UserService, useValue: mockUserService},
         {provide: MatDialog, useValue: mockMatAddEditDialog},
         {provide: MatDialog, useValue: mockAlertDialog},
+        {provide: MatSnackBar, useValue: mockMatSnackBar}
       ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
@@ -86,9 +91,17 @@ describe('ListComponent', () => {
 
   it('should Get All users', () => {
     // act
-    component.GetAllUsers();
+    component.GetAllUsers(false);
     fixture.detectChanges();
     // assert
     expect(component.AllUsers.length).toBe(mockUsersList.length);
+  });
+
+  it('should Get only Active users', () => {
+    // act
+    component.GetAllUsers(true);
+    fixture.detectChanges();
+    // assert
+    expect(component.AllUsers.length).toBe(mockUsersList.filter(d => d.Active).length);
   });
 });
