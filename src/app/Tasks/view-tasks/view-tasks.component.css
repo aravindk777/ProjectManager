@@ -1,0 +1,36 @@
+table {
+  width: 90%;
+  align-self: center;
+  vertical-align: middle;
+}
+
+/* Column Widths */
+.mat-column-number,
+.mat-column-state {
+  max-width: 64px;
+}
+.mat-column-created {
+  max-width: 124px;
+}
+
+/* mat-row:hover {
+  background-color: mediumslateblue;
+} */
+
+tasks-table-container {
+  position: relative;
+  max-height: 400px;
+  overflow: auto;
+}
+
+.taskview-container {
+  position: relative;
+  min-height: 200px;
+}
+
+mat-header-cell {
+  font-size: 14px;
+  font-weight: bold;
+  /* color: rgb(0, 150, 250); */
+}
+

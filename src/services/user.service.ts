@@ -34,7 +34,7 @@ export class UserService {
   AddUser(newUser: User): Observable<User> {
    return this.http.post<User>(usersUrl, newUser, {headers: HEADERS})
                   .pipe(
-                    tap(resp => console.log(JSON.stringify(resp))),
+                    // tap(resp => console.log(JSON.stringify(resp))),
                     map(resp => resp)
                   );
   }

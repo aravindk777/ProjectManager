@@ -4,6 +4,8 @@ import { MatDialogRef, MatSnackBar, MAT_DIALOG_DATA, MatSnackBarConfig } from '@
 import { ProjectService } from 'src/services/project.service';
 import { UserService } from 'src/services/user.service';
 import { User } from 'src/Model/Users/user.Model';
+import { LoggerService } from 'src/services/logger.service';
+import { log } from 'util';
 
 @Component({
   selector: 'app-edit-project',
@@ -16,22 +18,25 @@ export class EditProjectComponent implements OnInit {
   workInProgress = false;
 
   constructor(
+    private logger: LoggerService,
     private dialogRef: MatDialogRef<EditProjectComponent>,
     private matSbStatus: MatSnackBar,
     private projSvc: ProjectService,
     private userSvc: UserService,
     @Optional() @Inject(MAT_DIALOG_DATA) public projectToEdit?: Projects
   ) {
-    this.GetActiveUsersList();
+    // console.log('Param to Project edit: '+ JSON.stringify(projectToEdit));
     if (projectToEdit === null || projectToEdit === undefined) {
       this.projectToSave = new Projects();
     } else {
-      console.log(JSON.stringify(projectToEdit));
+      this.logger.LogInformation(null, projectToEdit.ProjectName, 'Constructor' , 'Edit Project');
       this.projectToSave = projectToEdit;
     }
   }
 
   ngOnInit() {
+    this.GetActiveUsersList();
+    this.logger.LogInformation(null, 'Inside Init method', 'NgOnInit', 'Edit project');
   }
 
   GetSnackbarConfiguration(politeness: boolean): MatSnackBarConfig {
@@ -82,11 +87,11 @@ export class EditProjectComponent implements OnInit {
   }
 
   GetActiveUsersList(): void {
-    console.log('Going to get all active users');
+    // console.log('Going to get all active users');
     this.userSvc.GetActiveUsers()
     .subscribe(data => {
       this.activeUsers = data;
-      console.log('Active users fetched: ' + this.activeUsers.length);
+      // console.log('Active users fetched: ' + this.activeUsers.length);
     });
   }
 

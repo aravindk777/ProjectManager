@@ -1,70 +1,110 @@
-<div class="container table-responsive">
-  <h2 class="well">{{ pageTitle }}</h2>
-  <br />
-  <table class="table table-borderless">
-    <tr class="row">
-      <th class="col-sm-2">Task Name</th>
-      <td class="col">
-        <input type="text" name="taskName" class="form-control col-sm-4" [(ngModel)]="newTask.TaskName" placeholder="Enter a task Name"  required />
-      </td>
-    </tr>
-    <tr class="row">
-      <th class="col-sm-2">Parent Task</th>
-      <td class="col">
-        <select name="parent" id="inputparent" class="form-control col-sm-4" [(ngModel)]="newTask.ParentTaskId" placeholder="--select--">
-          <option [ngValue]=null selected>-- Select One --</option>
-          <option *ngFor="let item of parents" [ngValue]="item.TaskId">{{item.TaskName}}</option>
-        </select>
-      </td>
-    </tr>
-    <tr class="row">
-      <th class="col-sm-2">Priority</th>
-      <td class="col">
-        <input type="range" name="priority" class="form-control col-sm-4" [(ngModel)]="newTask.Priority"
-          min="1" max="30" step="1" required [title]="newTask.Priority" />
-      </td>
-    </tr>
-    <tr class="row">
-      <th class="col-sm-2">Task Start date</th>
-      <td class="col">
-        <input type="date" name="startdate" class="form-control col-sm-4"
-        [ngModel]="newTask.StartDate | date: 'yyyy-MM-dd'" required (ngModelChange)="newTask.StartDate = $event"/>
-      </td>
-    </tr>
-    <tr class="row">
-      <th class="col-sm-2">Task End date</th>
-      <td class="col">
-        <input type="date" name="endDate" class="form-control col-sm-4"
-        [ngModel]="newTask.EndDate | date: 'yyyy-MM-dd'" required (ngModelChange)="newTask.EndDate = $event"/>
-      </td>
-    </tr>
-    <tr class="row">
-      <td class="col" colspan="2">
-        <div class="container text-center">
-          <button type="submit" class="btn btn-primary" (click)="AddTasks();">{{taskId === 0 ? 'Save' : 'Update'}}</button>&nbsp;&nbsp;&nbsp;&nbsp;
-          <button type="reset" class="btn btn-secondary" (click)="ClearOrBack();">{{taskId === 0 ? 'Clear' : 'Back'}}</button>
-        </div>
-      </td>
-    </tr>
-  </table>
-    <div class="alert alert-danger" name="errorMsg">Error occured while saving !</div>
-    <div class="alert alert-success" name="successMsg"></div>
-    <!-- <div class="modal modal-dialog">
-      <div name="successStatus" class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" aria-label="Close" ng-click="dismiss()">
-            <span aria-hidden="true">&times;</span>
-          </button>
-          <h4 class="modal-title">Saved successfully !</h4>
-        </div>
-        <div class="modal-body" name="ModalBody">
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-primary" focus-element="autofocus" type="button" ng-click="successCallback()">
-            OK
-          </button>
-        </div>
-      </div>
-    </div> -->
-  <!-- {{ newTask | json }} -->
-</div>
+<div>
+    <mat-accordion>
+    <h2 mat-dialog-title>{{this.newTask.TaskId === 0 || this.newTask.TaskId === undefined ? 'Create a new Task': 'Editing Task - "' + this.newTask.TaskName + '"'}}</h2>
+    <mat-dialog-content>
+      <mat-card class="card edit-card">
+        <mat-card-header>
+          <mat-card-title>Task Details</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <form class="card-addedit-window">
+              <table cellspacing="10" style="width: 100%">
+                <tr>
+                  <td>
+                    <mat-form-field class="card-field-width">
+                      <mat-label>Task assigned to</mat-label>
+                      <mat-select placeholder="Task Owner" [(ngModel)]="newTask.TaskOwnerId" name="taskOwnerDropdown" required>
+                        <mat-option>-- Select --</mat-option>
+                        <mat-option *ngFor="let user of this.activeUsers" [value]="user.Id">
+                          {{user.FullName}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-form-field class="card-field-width">
+                      <mat-label>Project</mat-label>
+                      <mat-select placeholder="Project" [(ngModel)]="newTask.ProjectId" name="projectsDropdown" required>
+                        <mat-option>-- Select --</mat-option>
+                        <mat-option *ngFor="let project of this.projects" [value]="project.ProjectId">
+                          {{project.ProjectName}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-form-field class="card-field-width">
+                      <mat-label>Parent Task</mat-label>
+                      <mat-select placeholder="Parent Task" [(ngModel)]="newTask.ParentTaskId" name="parentDropdown" required>
+                        <mat-option>-- Select --</mat-option>
+                        <mat-option *ngFor="let parent of this.parents" [value]="parent.TaskId">
+                          {{parent.TaskName}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-form-field class="card-field-width">
+                      <mat-label>Task Name</mat-label>
+                      <input matInput placeholder="Task Name" [(ngModel)]="newTask.TaskName" name="TaskName"
+                      maxlength="255" required>
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                      <mat-label>Priority</mat-label><br/>
+                      <mat-slider min="1" max="30" step="1" [(ngModel)]="newTask.Priority" class="card-field-width"
+                      thumbLabel tickInterval="1"  color="primary" name="priority" required></mat-slider>&nbsp;
+                      <!-- <mat-form-field>
+                        <input width="20" matInput type="text" readonly name="prioritytxt" [(ngModel)]="projectToSave.Priority" required>
+                      </mat-form-field> -->
+                      <!-- <input type="range" min="1" max="30" step="1" [(ngModel)]="projectToSave.Priority" name="priority" required /> -->
+                      <!-- <input matInput type="text" placeholder="Priority between 1 to 30" [(ngModel)]="projectToSave.Priority" name="priorityv" required> -->
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                      <mat-expansion-panel>
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          Task timeline
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            Expand for Start and End date(s)
+                        </mat-panel-description>
+                      </mat-expansion-panel-header>
+                      <mat-accordion>
+                        <mat-form-field class="card-field-width">
+                          <mat-label>Start date</mat-label>
+                          <input matInput type="date" placeholder="Start date" [ngModel]="newTask.StartDate | date: 'yyyy-MM-dd'" name="startDate"
+                          (ngModelChange)="newTask.StartDate = $event">
+                        </mat-form-field>
+                        <mat-form-field class="card-field-width">
+                          <mat-label>End date</mat-label>
+                          <input matInput type="date" placeholder="End date" [ngModel]="newTask.EndDate | date: 'yyyy-MM-dd'" name="endDate"
+                          (ngModelChange)="newTask.EndDate = $event">
+                        </mat-form-field>
+                    </mat-accordion>
+                    </mat-expansion-panel>
+                  </td>
+                </tr>
+              </table>
+            </form>
+            <mat-progress-bar mode="indeterminate" [style.display]="workInProgress ? 'block' : 'none'"></mat-progress-bar>
+            <!-- {{this.newTask | json }} -->
+        </mat-card-content>
+        <mat-card-actions>
+          <button color="primary" mat-button (click)="Save()" [disabled]="workInProgress"><mat-icon>save</mat-icon> SAVE</button>
+          <button mat-button (click)="cancelDialog();"><mat-icon>cancel</mat-icon> CANCEL</button>
+        </mat-card-actions>
+      </mat-card>
+    </mat-dialog-content>
+  </mat-accordion>
+  </div>

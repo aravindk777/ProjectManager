@@ -1,7 +1,7 @@
 <mat-toolbar class="mat-active" layout="row" fxLayoutAlign="start" layout-padding style="height: 100px; vertical-align: middle">
   <mat-toolbar-row style="height: 100%;">
 
-    <button mat-raised-button color="primary" (click)="AddNew()"><mat-icon>add</mat-icon> Add New</button>
+    <!-- <button mat-raised-button color="primary" (click)="AddNew()"><mat-icon>add</mat-icon> Add New</button> -->
     <mat-divider class="vertical-divider"></mat-divider>
 
     <!-- <mat-slide-toggle [(ngModel)]="activeOnly" (cdkAutofill)="GetAllUsers();" (change)="GetAllUsers();" style="margin-left: 20px;"
@@ -9,10 +9,10 @@
     <mat-divider class="vertical-divider"></mat-divider>
 
     <span class="tlbSpacer"></span>
-    <!-- <mat-form-field style="max-width: 500px; width: 500px;">
-      <input matInput name="searchUser" placeholder="Search" type="text" width="250px" [(ngModel)]="searchKeyword" ngDefaultControl>
+    <mat-form-field style="width: 100%; margin-left: 5%; margin-right: 5%;">
+      <input matInput name="searchProject" placeholder="Search by Project / Task / Manager names" type="text" width="250px" [(ngModel)]="searchKeyword" ngDefaultControl>
     </mat-form-field>
-    <button button="submit" mat-raised-button color="active" style="margin-left: 10px;" (click)="Search()">Search</button> -->
+    <!-- <button button="submit" mat-raised-button color="active" style="margin-left: 10px;" (click)="Search()">Search</button> -->
 
     <span class="tlbSpacer"></span>
     <span class="tlbSpacer"></span>
@@ -30,83 +30,91 @@
 
 <div style="vertical-align: middle; text-align: center;align-content: center; height: 50px;" [style.display]="loadingInProgress ? 'block' : 'none'" color="warn">
   <mat-progress-bar mode="query" [style.display]="loadingInProgress ? 'block' : 'none'" color="warn"></mat-progress-bar>
-  <span class="content-for-projects">Loading...</span>
+  <span class="loading-text-style">Loading...</span>
 </div>
 
 <mat-accordion class="root-card-wrapper">
-  <!-- <mat-card class="user-card">
-    <mat-card-content>
-      <mat-form-field>
-        <button matButton style="width: 50%;height: 50%;">
-          <mat-icon>add</mat-icon>
-        </button>
-      </mat-form-field>
+
+  <mat-card class="project-card-mini">
+  <mat-card-header fxLayout="column" fxLayoutAlign="center center">
+      <mat-card-title>{{addNewTitleForSearch}}
+      </mat-card-title>
+      <mat-card-subtitle>&nbsp;
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content style="height: 50%; align-content: center">
+      <button mat-flat-button color="secondary" style="width: 100%;height: 100%;" (click)="AddNew()"><mat-icon>add</mat-icon> Add New</button>
     </mat-card-content>
-  </mat-card> -->
+  </mat-card>
 
   <mat-card class="project-card" *ngFor="let project of AllProjects;">
-  <ng-container *ngIf="project.IsActive; else inactiveTitle">
-  <mat-card-header fxLayout="column" fxLayoutAlign="center center">
-    <mat-card-title>
-      {{project.ProjectName}}
-    </mat-card-title>
-    <mat-card-subtitle>
-      Project Manager: {{project.ManagerName}}
-    </mat-card-subtitle>
-  </mat-card-header>
-  </ng-container>
-  <ng-template #inactiveTitle>
-    <mat-card-header class="disabled" fxLayout="column" fxLayoutAlign="center center">
-        <mat-card-title>
-            <i>{{project.ProjectName}} (<strong>Inactive</strong>)</i>
-        </mat-card-title>
-        <mat-card-subtitle>was managed by {{project.ManagerName}}</mat-card-subtitle>
-      </mat-card-header>
-  </ng-template>
-  <mat-card-content fxLayout="column" fxLayoutAlign="center center">
-    <table style="width: 100%;">
-      <!-- Tasks details -->
-      <tr style="height: 50px;">
-        <td><b>Total Tasks</b></td>
-        <td>#</td>
-        <td><b>Completed</b></td>
-        <td>#</td>
-        <!-- actions -->
-        <Td style="width: 60px; text-align: right;">
-            <span class="align-to-end">
-                <button mat-mini-fab color="primary" class="button-space" (click)="EditProject(project);"><mat-icon>edit</mat-icon></button>
-                <!-- <button mat-mini-fab color="warn" [disabled]="!project.IsActive" class="button-space" (click)="Delete(project.ProjectId);"><mat-icon>done</mat-icon></button> -->
-            </span>
-        </Td>
-      </tr>
-
-      <!-- Timelines -->
-      <tr style="height: 50px;">
-          <td><b>Start Date</b></td>
-          <td>{{project.ProjectStart | date:'shortDate'}}</td>
-          <td><b>End Date</b></td>
-          <td>{{project.ProjectEnd | date:'shortDate'}}</td>
+    <ng-container *ngIf="project.IsActive; else inactiveTitle">
+    <mat-card-header fxLayout="column" fxLayoutAlign="center center">
+      <mat-card-title>
+        {{project.ProjectName}}
+      </mat-card-title>
+      <mat-card-subtitle>
+        Project Manager: {{project.ManagerName}}
+      </mat-card-subtitle>
+    </mat-card-header>
+    </ng-container>
+    <ng-template #inactiveTitle>
+      <mat-card-header class="disabled" fxLayout="column" fxLayoutAlign="center center">
+          <mat-card-title>
+              <i>{{project.ProjectName}} (<strong>Inactive</strong>)</i>
+          </mat-card-title>
+          <mat-card-subtitle>was managed by {{project.ManagerName}}</mat-card-subtitle>
+        </mat-card-header>
+    </ng-template>
+    <mat-card-content fxLayout="column" fxLayoutAlign="center center">
+      <table style="width: 100%;">
+        <!-- Tasks details -->
+        <tr style="height: 50px;">
+          <td><b>Total Tasks</b></td>
+          <!-- <td>{{GetTasksForProject(project.ProjectId)}}</td> -->
+          <td><b>Completed</b></td>
+          <td>#</td>
           <!-- actions -->
-        <Td style="width: 60px; text-align: right;">
-            <span class="align-to-end">
-                <!-- <button mat-mini-fab color="primary" class="button-space" (click)="EditProject(project);"><mat-icon>edit</mat-icon></button> -->
-                <button mat-mini-fab color="warn" [disabled]="!project.IsActive" class="button-space" (click)="Delete(project.ProjectId);"><mat-icon>done</mat-icon></button>
-            </span>
-        </Td>
-      </tr>
+          <Td style="width: 60px; text-align: right;">
+              <span class="align-to-end">
+                  <button mat-mini-fab color="primary" class="button-space" (click)="EditProject(project);"><mat-icon>edit</mat-icon></button>
+                  <!-- <button mat-mini-fab color="warn" [disabled]="!project.IsActive" class="button-space" (click)="Delete(project.ProjectId);"><mat-icon>done</mat-icon></button> -->
+              </span>
+          </Td>
+        </tr>
 
-      <!-- Priority marker-->
-      <tr>
-        <!-- <td colspan=5 style="background-image: linear-gradient(to right, red, rgb(0, 255, 0));height: 5px;border-radius: 5px;"></td> -->
-        <td colspan=5>
-          <mat-progress-bar mode="Determinate" color="warn" [value]="project.Priority/30 * 100"></mat-progress-bar>
-        </td>
-      </tr>
-    </table>
-  </mat-card-content>
-  <!-- <mat-card-actions fxLayout="row" fxLayoutAlign="center center">
-    <button mat-button class="btn-bordered" color="primary" class="button-space" (click)="EditProject(project);"><mat-icon>edit</mat-icon> UPDATE</button>
-    <button mat-button class="btn-bordered" color="warn" [disabled]="!project.IsActive" class="button-space"><mat-icon>delete</mat-icon> COMPLETE</button>
-  </mat-card-actions> -->
+        <!-- Display tasks -->
+        <!-- <tr>
+
+        </tr> -->
+
+        <!-- Timelines -->
+        <tr style="height: 50px;">
+            <td><b>Start Date</b></td>
+            <td>{{project.ProjectStart | date:'shortDate'}}</td>
+            <td><b>End Date</b></td>
+            <td>{{project.ProjectEnd | date:'shortDate'}}</td>
+            <!-- actions -->
+          <Td style="width: 60px; text-align: right;">
+              <span class="align-to-end">
+                  <!-- <button mat-mini-fab color="primary" class="button-space" (click)="EditProject(project);"><mat-icon>edit</mat-icon></button> -->
+                  <button mat-mini-fab color="warn" [disabled]="!project.IsActive" class="button-space" (click)="Delete(project.ProjectId);"><mat-icon>done</mat-icon></button>
+              </span>
+          </Td>
+        </tr>
+
+        <!-- Priority marker-->
+        <tr>
+          <!-- <td colspan=5 style="background-image: linear-gradient(to right, red, rgb(0, 255, 0));height: 5px;border-radius: 5px;"></td> -->
+          <td colspan=5>
+            <mat-progress-bar mode="Determinate" color="warn" [value]="project.Priority/30 * 100"></mat-progress-bar>
+          </td>
+        </tr>
+      </table>
+    </mat-card-content>
+    <!-- <mat-card-actions fxLayout="row" fxLayoutAlign="center center">
+      <button mat-button class="btn-bordered" color="primary" class="button-space" (click)="EditProject(project);"><mat-icon>edit</mat-icon> UPDATE</button>
+      <button mat-button class="btn-bordered" color="warn" [disabled]="!project.IsActive" class="button-space"><mat-icon>delete</mat-icon> COMPLETE</button>
+    </mat-card-actions> -->
   </mat-card>
 </mat-accordion>

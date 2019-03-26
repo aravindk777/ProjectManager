@@ -7,15 +7,13 @@ import {MatCardModule } from '@angular/material/card';
 import {
   MatSidenavModule, MatToolbarModule, MatIconModule, MatButtonModule, MatListModule, MatTableModule,
   MatInputModule, MatCheckboxModule, MatDialogModule, MatProgressSpinnerModule, MatSnackBarModule,
-  MatSlideToggleModule, MatProgressBarModule, MatSelectModule, MatSliderModule, MatFormFieldModule
+  MatSlideToggleModule, MatProgressBarModule, MatSelectModule, MatSliderModule, MatFormFieldModule,
+  MatPaginatorModule
 } from '@angular/material';
 
-import {MatExpansionModule} from '@angular/material/expansion';
-
+import { MatExpansionModule} from '@angular/material/expansion';
 import { MatRadioModule } from '@angular/material/radio';
-
-
-
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @NgModule({
   declarations: [],
@@ -23,15 +21,15 @@ import { MatRadioModule } from '@angular/material/radio';
     CommonModule, MatCardModule, MatTableModule, MatButtonModule, MatSidenavModule,
     MatToolbarModule, MatIconModule, MatListModule, MatInputModule, MatFormFieldModule,
     MatCheckboxModule, MatDialogModule, MatProgressSpinnerModule, MatSnackBarModule,
-    FlexLayoutModule, MatSliderModule, MatExpansionModule,
-    MatSlideToggleModule, MatProgressBarModule, MatRadioModule, MatSelectModule
+    FlexLayoutModule, MatSliderModule, MatExpansionModule, MatPaginatorModule,
+    MatSlideToggleModule, MatProgressBarModule, MatRadioModule, MatSelectModule, NgxSpinnerModule
   ],
   exports: [
     CommonModule, MatCardModule, MatTableModule, MatButtonModule,
     MatSidenavModule, MatToolbarModule, MatIconModule, MatListModule,
     MatInputModule, MatFormFieldModule, MatCheckboxModule, MatDialogModule,
-    MatProgressSpinnerModule, MatSnackBarModule, FlexLayoutModule, MatSliderModule,
-    MatSlideToggleModule, MatProgressBarModule, MatRadioModule, MatSelectModule, MatExpansionModule
+    MatProgressSpinnerModule, MatSnackBarModule, FlexLayoutModule, MatSliderModule, MatPaginatorModule,
+    MatSlideToggleModule, MatProgressBarModule, MatRadioModule, MatSelectModule, MatExpansionModule, NgxSpinnerModule
   ]
 })
 export class RunnerModule { }

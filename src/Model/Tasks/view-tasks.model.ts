@@ -1,11 +1,15 @@
 export class ViewTasks {
   TaskId: number;
   TaskName: string;
-  ParentTask: string;
+  ParentTaskName: string;
+  ParentTaskId: number;
   Priority: number;
-  PriorityText: string;
+  OwnerFullName: string;
+  TaskOwnerId: string;
+  ProjectName: string;
+  ProjectId: number;
   StartDate: Date;
   EndDate: Date;
-  Status: string;
-  Active: boolean;
+  IsActive: boolean;
+  IsParent: boolean;
 }

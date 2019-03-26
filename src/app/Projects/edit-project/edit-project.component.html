@@ -1,17 +1,22 @@
 <div>
   <mat-accordion>
-  <h2 mat-dialog-title>{{this.projectToSave.ProjectId === 0 || this.projectToSave.ProjectId === undefined ? 'Create a new Project': 'Editing Project - "' + this.projectToSave.ProjectName + '"'}}</h2>
+    <div style="width:100%;">
+        <!-- <span style="text-align: right; flex-wrap: wrap-reverse;">
+            <button mat-flat-button (click)="cancelDialog();"><mat-icon>cancel</mat-icon></button>
+          </span> -->
+        <h2 mat-dialog-title>{{this.projectToSave.ProjectId === 0 || this.projectToSave.ProjectId === undefined ? 'Create a new Project': 'Editing Project - "' + this.projectToSave.ProjectName + '"'}}</h2>
+    </div>
   <mat-dialog-content>
-    <mat-card class="card proj-card ">
+    <mat-card class="card edit-card">
       <mat-card-header>
         <mat-card-title>Project Information</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-          <form class="project-addedit-window">
+          <form class="card-addedit-window">
             <table cellspacing="10" style="width: 100%">
               <tr>
                 <td>
-                  <mat-form-field class="project-field-width">
+                  <mat-form-field class="card-field-width">
                     <mat-label>Project Name</mat-label>
                     <input matInput placeholder="Project Name" [(ngModel)]="projectToSave.ProjectName" name="ProjectName"
                     maxlength="255" required>
@@ -20,7 +25,7 @@
               </tr>
               <tr>
                 <td>
-                  <mat-form-field class="project-field-width">
+                  <mat-form-field class="card-field-width">
                     <mat-label>Project Manager</mat-label>
                     <mat-select placeholder="Project Manager" [(ngModel)]="projectToSave.ManagerId" name="projectManagerDropdown" required>
                       <mat-option>-- Select --</mat-option>
@@ -34,7 +39,7 @@
               <tr>
                 <td>
                     <mat-label>Priority</mat-label><br/>
-                    <mat-slider min="1" max="30" step="1" [(ngModel)]="projectToSave.Priority" class="project-field-width"
+                    <mat-slider min="1" max="30" step="1" [(ngModel)]="projectToSave.Priority" class="card-field-width"
                     thumbLabel tickInterval="1"  color="primary" name="priority" required></mat-slider>&nbsp;
                     <!-- <mat-form-field>
                       <input width="20" matInput type="text" readonly name="prioritytxt" [(ngModel)]="projectToSave.Priority" required>
@@ -65,12 +70,12 @@
                       </mat-panel-description>
                     </mat-expansion-panel-header>
                     <mat-accordion>
-                      <mat-form-field class="project-field-width">
+                      <mat-form-field class="card-field-width">
                         <mat-label>Project Start date</mat-label>
                         <input matInput type="date" placeholder="Start date" [ngModel]="projectToSave.ProjectStart | date: 'yyyy-MM-dd'" name="startDate"
                         (ngModelChange)="projectToSave.ProjectStart = $event">
                       </mat-form-field>
-                      <mat-form-field class="project-field-width">
+                      <mat-form-field class="card-field-width">
                         <mat-label>Project End date</mat-label>
                         <input matInput type="date" placeholder="End date" [ngModel]="projectToSave.ProjectEnd | date: 'yyyy-MM-dd'" name="endDate"
                         (ngModelChange)="projectToSave.ProjectEnd = $event">

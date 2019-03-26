@@ -12,10 +12,20 @@ import { AlertsComponent } from 'src/app/common/alerts.component';
   styleUrls: ['./list-projects.component.css']
 })
 export class ListProjectsComponent implements OnInit {
-
   AllProjects: Projects[];
   alertData: AlertInfo;
   loadingInProgress = true;
+  addNewTitleForSearch = ' ';
+
+  _searchKeyword: string;
+  get searchKeyword(): string {return this._searchKeyword; }
+  set searchKeyword(value: string) {
+    if (value !== '') {
+      this._searchKeyword = value;
+      this.Search(value);
+    } else { this.GetProjects(); }
+  }
+
   constructor(
     private projectApi: ProjectService,
     private projAddEditDialog: MatDialog,
@@ -38,14 +48,19 @@ export class ListProjectsComponent implements OnInit {
     // } else { dialogConfig.width = '50pc'; }
     dialogConfig.id = dialogFor;
     dialogConfig.data = data;
-    console.log('dialog data is ' + JSON.stringify(data));
+    // console.log('dialog data is ' + JSON.stringify(data));
     return dialogConfig;
   }
 
   public AddNew() {
-    const diagRef = this.projAddEditDialog.open(EditProjectComponent, this.DialogSettings());
+    let emptyProject: Projects;
+    if (this.searchKeyword !== null && this.searchKeyword !== '') {
+      emptyProject = new Projects();
+      emptyProject.ProjectName = this.searchKeyword;
+    }
+    const diagRef = this.projAddEditDialog.open(EditProjectComponent, this.DialogSettings(emptyProject));
     diagRef.afterClosed().subscribe(data => {
-      console.log('status after closure: ' + data);
+      // console.log('status after closure: ' + data);
       if (<boolean>data) {
         this.GetProjects();
       }
@@ -104,5 +119,25 @@ export class ListProjectsComponent implements OnInit {
       }
     });
 
+  }
+
+  public GetTasksForProject(projectId: number): number {
+    let taskCount = 0;
+    this.projectApi.GetTasksForProject(projectId)
+    .subscribe(data => taskCount = data.length);
+    return taskCount;
+  }
+
+  public Search(keyword: string) {
+    this.loadingInProgress = true;
+    this.projectApi.Search(keyword)
+    .subscribe(results => {
+      this.AllProjects = results;
+      if (this.AllProjects === undefined || this.AllProjects.length === 0) {
+        // do nothing for now.
+        this.addNewTitleForSearch = 'Could not find what you are looking for?';
+      } else { this.addNewTitleForSearch = ' ';}
+      this.loadingInProgress = false;
+    });
   }
 }
