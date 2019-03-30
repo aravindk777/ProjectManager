@@ -34,3 +34,11 @@ mat-header-cell {
   /* color: rgb(0, 150, 250); */
 }
 
+.strikeout  {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  border-bottom: 1px solid #111;
+  width: 100%;
+}

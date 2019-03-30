@@ -2,11 +2,12 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ViewTasks } from 'src/Model/Tasks/view-tasks.model';
 import { TasksService } from 'src/services/tasks.service';
 import { environment } from 'src/environments/environment';
-import { MatPaginator, MatSort, MatDialog, MatDialogConfig } from '@angular/material';
+import { MatPaginator, MatSort, MatDialog, MatDialogConfig, MatSnackBar } from '@angular/material';
 import { AddTaskComponent } from '../add-task/add-task.component';
 import { Task } from 'src/Model/Tasks/task.model';
 import { AlertInfo } from 'src/Model/common/alert-info.model';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { AlertsComponent } from 'src/app/common/alerts.component';
 
 @Component({
   selector: 'app-view-tasks',
@@ -28,6 +29,8 @@ export class ViewTasksComponent implements OnInit {
   constructor(
     private taskApiSvc: TasksService,
     private taskAddEditDialog: MatDialog,
+    private confirmationDialog: MatDialog,
+    private snackBarStatus: MatSnackBar
     // private pageLoadingSpinner: NgxSpinnerService
     ) {
    }
@@ -118,18 +121,30 @@ export class ViewTasksComponent implements OnInit {
     });
   }
 
-  EndTask(TaskId: number, skipConfirmation = false): boolean {
-    const confirmation = !skipConfirmation ? confirm('Are you sure ?') : skipConfirmation;
-    if (confirmation) {
-      this.taskApiSvc.EndTask(TaskId)
-      .subscribe(res => {
-        if (res) {
-          // window.location.reload();
-          this.GetAllTasks();
-        } else { alert('Could not end the task. Please try again later!'); }
-      }, err => console.log('Error occured: ' + <any> err));
-    }
-    return confirmation;
+  EndTask(TaskId: number, skipConfirmation = false): void {
+    const confirmDialogData = new AlertInfo();
+    confirmDialogData.ConfirmPopup = true;
+    let alertMsg = 'Task will be marked as completed.\n';
+    alertMsg = alertMsg.concat('Are you sure ?');
+    confirmDialogData.Body = alertMsg;
+
+    const diagRef = this.confirmationDialog.open(AlertsComponent, this.DialogSettings(confirmDialogData, 'ConfirmEndTask' + TaskId));
+    diagRef.afterClosed().subscribe(resp => {
+      if (<Boolean> resp) {
+        this.loadingInProgress = true;
+        this.taskApiSvc.EndTask(TaskId)
+        .subscribe(result => {
+          this.loadingInProgress = false;
+          this.snackBarStatus.open('Task completed!', 'Dismiss', {duration: 3000});
+          if (result) {
+            this.GetAllTasks();
+          }
+        },
+        err => {
+          this.snackBarStatus.open('Error occurred! Please retry or report the issue to application manager.', 'Ok', {duration: 3000});
+        });
+      }
+    });
   }
 
   DialogSettings(data?: Task | AlertInfo, dialogFor?: string): MatDialogConfig {

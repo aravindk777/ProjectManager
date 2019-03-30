@@ -145,7 +145,7 @@ set activeOnly(value: boolean) {
     });
   }
 
-  public Search(keyword: string) {
+  public Search(keyword?: string) {
     this.loadingInProgress = true;
     this.userApi.SearchUser(this._searchKeyword || keyword)
     .subscribe(users => {

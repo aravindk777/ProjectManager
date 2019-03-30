@@ -91,7 +91,7 @@ export class TasksService {
 
   // End a Task
   EndTask(taskId: number): Observable<Boolean> {
-    return this.http.post<Boolean>(taskApiUrl + '/' + taskId, {headers: HEADERS})
+    return this.http.post<Boolean>(taskApiUrl + '/' + taskId + '/End', {headers: HEADERS})
     .pipe(tap(result => console.log('Status of the End Task: ' + result)));
   }
 }

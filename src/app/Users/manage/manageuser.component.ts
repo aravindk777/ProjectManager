@@ -11,6 +11,7 @@ import { UserService } from 'src/services/user.service';
 export class ManageUserComponent implements OnInit {
   user: User;
   workInProgress = false;
+  incomingUserId: string;
 
   constructor(
     private dialogRef: MatDialogRef<ManageUserComponent>,
@@ -22,6 +23,7 @@ export class ManageUserComponent implements OnInit {
       if (userToEdit === null || userToEdit === undefined) {
         this.user = new User();
       } else {
+        this.incomingUserId = userToEdit.UserId;
         this.user = userToEdit;
       }
    }
@@ -63,7 +65,7 @@ export class ManageUserComponent implements OnInit {
     );
   } else {
     console.log('data to update: ' + JSON.stringify(this.user));
-    this.userSvc.UpdateUser(this.user)
+    this.userSvc.UpdateUser(this.incomingUserId, this.user)
     .subscribe(result => {
       this.workInProgress = false;
       if (result !== null) {

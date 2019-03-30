@@ -40,8 +40,8 @@ export class UserService {
   }
 
   // Edit User
-  UpdateUser(userToUpdate: User): Observable<boolean> {
-    const putUri = usersUrl + '/' + userToUpdate.UserId;
+  UpdateUser(userid: string, userToUpdate: User): Observable<boolean> {
+    const putUri = usersUrl + '/' + userid;
   return this.http.put<boolean>(putUri, userToUpdate, {headers: HEADERS})
   .pipe(
     tap(resp => console.log('result of update: ' + resp)),

@@ -8,7 +8,8 @@
       matSortDisableClear matSortDirection="desc">
       <ng-container matColumnDef="TaskName">
         <mat-header-cell *matHeaderCellDef>Task Name</mat-header-cell>
-        <mat-cell *matCellDef="let task" >{{task.TaskName}}
+        <mat-cell *matCellDef="let task" >
+          {{task.TaskName}}
         </mat-cell>
       </ng-container>
 
@@ -45,15 +46,14 @@
       <ng-container matColumnDef="Options">
           <mat-header-cell *matHeaderCellDef></mat-header-cell>
           <mat-cell *matCellDef="let task">
-            <button mat-button (click)="EditTask(task);"><mat-icon>edit</mat-icon> EDIT</button>&nbsp;&nbsp;
-            <button mat-button color="accent"><mat-icon>done</mat-icon> DONE</button>
+            <button mat-button (click)="EditTask(task);" [style.display]="task.IsActive ? 'block' : 'none'"><mat-icon>edit</mat-icon> EDIT</button>&nbsp;&nbsp;
+            <button mat-button color="accent" (click)="EndTask(task.TaskId);" [style.display]="task.IsActive ? 'block' : 'none'"><mat-icon>done</mat-icon> DONE</button>
+            <div style="width:100%;flex-wrap: wrap;text-align: right; align-items: flex-end;"><mat-icon [style.display]="!task.IsActive ? 'block' : 'none'">thumb_up</mat-icon></div>
           </mat-cell>
-        </ng-container>
+      </ng-container>
 
-      <mat-header-row *matHeaderRowDef="displayColumns">
-      </mat-header-row>
+      <mat-header-row *matHeaderRowDef="displayColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayColumns;"></mat-row>
-
     </mat-table>
   </div>
   <span style="margin: 5px; float: left;">

@@ -28,12 +28,12 @@ export class AddTaskComponent implements OnInit {
     private matSbStatus: MatSnackBar,
     @Optional() @Inject(MAT_DIALOG_DATA) public taskToEdit?: Task
     ) {
-      console.log('Incoming data: ' + JSON.stringify(this.taskToEdit));
+      // console.log('Incoming data: ' + JSON.stringify(this.taskToEdit));
       if (taskToEdit === null || taskToEdit === undefined) {
         // console.log('Initialize for new task...');
         this.newTask = new Task();
       } else { this.newTask = taskToEdit; }
-      console.log('Task to work: ' + JSON.stringify(this.newTask));
+      // console.log('Task to work: ' + JSON.stringify(this.newTask));
   }
 
   ngOnInit() {
@@ -60,7 +60,6 @@ export class AddTaskComponent implements OnInit {
     this.workInProgress = true;
     // console.log('Task to Save: ' + JSON.stringify(this.newTask) + ' and TAskid status : ',this.newTask.TaskId !== 0);
     if (this.newTask.TaskId === undefined || this.newTask.TaskId === 0) {
-      console.log('Adding new task..');
       this.taskServices.AddNewTask(this.newTask)
     .subscribe(status => {
        if (status.TaskId !== 0) {
@@ -77,16 +76,15 @@ export class AddTaskComponent implements OnInit {
     }
     );
     } else {
-    console.log('Updating existing task - ' + this.newTask.TaskId);
       this.taskServices.UpdateTask(this.newTask.TaskId, this.newTask)
       .subscribe(result => {
         if (result) {
-          // alert('Updated successfully!');
           this.workInProgress = false;
+          this.dialogRef.close(status);
         }
       },
       error => {
-        console.log('Add Error: ' + JSON.stringify(<any>error));
+        // console.log('Add Error: ' + JSON.stringify(<any>error));
         this.workInProgress = false;
       });
   }
