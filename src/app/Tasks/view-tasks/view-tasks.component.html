@@ -1,0 +1,67 @@
+<div style="vertical-align: middle; text-align: center;align-content: center; height: 50px;" [style.display]="loadingInProgress ? 'block' : 'none'" color="warn">
+  <mat-progress-bar mode="query" [style.display]="loadingInProgress ? 'block' : 'none'" color="warn"></mat-progress-bar>
+  <span class="loading-text-style">Loading...</span>
+</div>
+<div class="mat-elevation-z8">
+  <div class="tasks-table-container">
+    <mat-table [dataSource]="AllTasks" matSort matSortActive="StartDate" multiTemplateDataRows
+      matSortDisableClear matSortDirection="desc">
+      <ng-container matColumnDef="TaskName">
+        <mat-header-cell *matHeaderCellDef>Task Name</mat-header-cell>
+        <mat-cell *matCellDef="let task" >{{task.TaskName}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="Parent">
+        <mat-header-cell *matHeaderCellDef>Parent</mat-header-cell>
+        <mat-cell *matCellDef="let task">{{task.ParentTaskName}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="UserName">
+          <mat-header-cell *matHeaderCellDef>User Name</mat-header-cell>
+          <mat-cell *matCellDef="let task">{{task.OwnerFullName}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="ProjectName">
+          <mat-header-cell *matHeaderCellDef>Project</mat-header-cell>
+          <mat-cell *matCellDef="let task">{{task.ProjectName}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="Priority">
+        <mat-header-cell *matHeaderCellDef>Priority</mat-header-cell>
+        <mat-cell *matCellDef="let task">{{task.Priority}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="StartDate">
+        <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Start Date</mat-header-cell>
+        <mat-cell *matCellDef="let task">{{task.StartDate | date}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="EndDate">
+        <mat-header-cell *matHeaderCellDef>End Date</mat-header-cell>
+        <mat-cell *matCellDef="let task">{{task.EndDate | date}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="Options">
+          <mat-header-cell *matHeaderCellDef></mat-header-cell>
+          <mat-cell *matCellDef="let task">
+            <button mat-button (click)="EditTask(task);"><mat-icon>edit</mat-icon> EDIT</button>&nbsp;&nbsp;
+            <button mat-button color="accent"><mat-icon>done</mat-icon> DONE</button>
+          </mat-cell>
+        </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayColumns">
+      </mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayColumns;"></mat-row>
+
+    </mat-table>
+  </div>
+  <span style="margin: 5px; float: left;">
+    <button mat-flat-button color="primary" (click)="AddTask();"><mat-icon>add</mat-icon> Add New</button>
+</span>
+<mat-paginator [length]="pages" [pageSize]="10" showFirstLastButtons></mat-paginator>
+</div>
+<!-- <ngx-spinner bdColor = "#333" size = "large" color = "#fff" type = "timer" fullScreen = "false"
+[style.display]="loadingInProgress ? 'block' : 'none'">
+<p style="color: white;font-family: inherit" > Loading... </p>
+</ngx-spinner> -->

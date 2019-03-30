@@ -1,0 +1,110 @@
+<div>
+    <mat-accordion>
+    <h2 mat-dialog-title>{{this.newTask.TaskId === 0 || this.newTask.TaskId === undefined ? 'Create a new Task': 'Editing Task - "' + this.newTask.TaskName + '"'}}</h2>
+    <mat-dialog-content>
+      <mat-card class="card edit-card">
+        <mat-card-header>
+          <mat-card-title>Task Details</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <form class="card-addedit-window">
+              <table cellspacing="10" style="width: 100%">
+                <tr>
+                  <td>
+                    <mat-form-field class="card-field-width">
+                      <mat-label>Task assigned to</mat-label>
+                      <mat-select placeholder="Task Owner" [(ngModel)]="newTask.TaskOwnerId" name="taskOwnerDropdown" required>
+                        <mat-option>-- Select --</mat-option>
+                        <mat-option *ngFor="let user of this.activeUsers" [value]="user.Id">
+                          {{user.FullName}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-form-field class="card-field-width">
+                      <mat-label>Project</mat-label>
+                      <mat-select placeholder="Project" [(ngModel)]="newTask.ProjectId" name="projectsDropdown" required>
+                        <mat-option>-- Select --</mat-option>
+                        <mat-option *ngFor="let project of this.projects" [value]="project.ProjectId">
+                          {{project.ProjectName}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-form-field class="card-field-width">
+                      <mat-label>Parent Task</mat-label>
+                      <mat-select placeholder="Parent Task" [(ngModel)]="newTask.ParentTaskId" name="parentDropdown" required>
+                        <mat-option>-- Select --</mat-option>
+                        <mat-option *ngFor="let parent of this.parents" [value]="parent.TaskId">
+                          {{parent.TaskName}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-form-field class="card-field-width">
+                      <mat-label>Task Name</mat-label>
+                      <input matInput placeholder="Task Name" [(ngModel)]="newTask.TaskName" name="TaskName"
+                      maxlength="255" required>
+                    </mat-form-field>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                      <mat-label>Priority</mat-label><br/>
+                      <mat-slider min="1" max="30" step="1" [(ngModel)]="newTask.Priority" class="card-field-width"
+                      thumbLabel tickInterval="1"  color="primary" name="priority" required></mat-slider>&nbsp;
+                      <!-- <mat-form-field>
+                        <input width="20" matInput type="text" readonly name="prioritytxt" [(ngModel)]="projectToSave.Priority" required>
+                      </mat-form-field> -->
+                      <!-- <input type="range" min="1" max="30" step="1" [(ngModel)]="projectToSave.Priority" name="priority" required /> -->
+                      <!-- <input matInput type="text" placeholder="Priority between 1 to 30" [(ngModel)]="projectToSave.Priority" name="priorityv" required> -->
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                      <mat-expansion-panel>
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          Task timeline
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            Expand for Start and End date(s)
+                        </mat-panel-description>
+                      </mat-expansion-panel-header>
+                      <mat-accordion>
+                        <mat-form-field class="card-field-width">
+                          <mat-label>Start date</mat-label>
+                          <input matInput type="date" placeholder="Start date" [ngModel]="newTask.StartDate | date: 'yyyy-MM-dd'" name="startDate"
+                          (ngModelChange)="newTask.StartDate = $event">
+                        </mat-form-field>
+                        <mat-form-field class="card-field-width">
+                          <mat-label>End date</mat-label>
+                          <input matInput type="date" placeholder="End date" [ngModel]="newTask.EndDate | date: 'yyyy-MM-dd'" name="endDate"
+                          (ngModelChange)="newTask.EndDate = $event">
+                        </mat-form-field>
+                    </mat-accordion>
+                    </mat-expansion-panel>
+                  </td>
+                </tr>
+              </table>
+            </form>
+            <mat-progress-bar mode="indeterminate" [style.display]="workInProgress ? 'block' : 'none'"></mat-progress-bar>
+            <!-- {{this.newTask | json }} -->
+        </mat-card-content>
+        <mat-card-actions>
+          <button color="primary" mat-button (click)="Save()" [disabled]="workInProgress"><mat-icon>save</mat-icon> SAVE</button>
+          <button mat-button (click)="cancelDialog();"><mat-icon>cancel</mat-icon> CANCEL</button>
+        </mat-card-actions>
+      </mat-card>
+    </mat-dialog-content>
+  </mat-accordion>
+  </div>

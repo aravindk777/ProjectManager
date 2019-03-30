@@ -1,0 +1,46 @@
+<div>
+<h2 mat-dialog-title>{{this.user.Id === '' || this.user.Id === undefined ? 'Create a new User': 'Editing User ' + user.UserId}}</h2>
+<mat-dialog-content>
+  <mat-card class="card user-card">
+    <mat-card-header>
+      <mat-card-title>User details</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <form class="user-form-window">
+          <table cellspacing="10" width="55%">
+            <tr>
+              <td>
+                <mat-form-field class="user-form-field">
+                  <mat-label>First Name</mat-label>
+                  <input matInput placeholder="First Name" [(ngModel)]="user.FirstName" name="FirstName" required>
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field class="user-form-field">
+                  <mat-label>Last Name</mat-label>
+                  <input matInput placeholder="Last Name" [(ngModel)]="user.LastName" name="LastName" required>
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field class="user-form-field">
+                  <mat-label>User Id</mat-label>
+                  <input matInput placeholder="User Id" [(ngModel)]="user.UserId" name="UserId" required>
+                </mat-form-field>
+              </td>
+            </tr>
+          </table>
+        </form>
+        <mat-progress-bar mode="indeterminate" [style.display]="workInProgress ? 'block' : 'none'"></mat-progress-bar>
+    </mat-card-content>
+    <mat-card-actions>
+      <button color="primary" mat-raised-button (click)="SaveUser()" [disabled]="workInProgress"><mat-icon>save</mat-icon> SAVE</button>
+      &nbsp;&nbsp;
+      <button mat-stroked-button (click)="closeDialog();"><mat-icon>cancel</mat-icon> CANCEL</button>
+    </mat-card-actions>
+  </mat-card>
+</mat-dialog-content>
+</div>

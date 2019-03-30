@@ -1,0 +1,44 @@
+<!-- <mat-card class="card user-card">
+  <mat-card-header>
+    <mat-card-title style="text-align:center">{{alertData.Header}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="mat-background-warn">
+    <div>
+      {{alertData.Body}}
+      <br/>
+      Click YES to confirm, NO to ignore and close this alert
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+    <ng-container *ngIf="alertData.ConfirmPopup; else alertOnly">
+        <button mat-button color="primary" class="button-space" (click)="ConfirmResponse(true);">YES</button>
+        <button mat-button color="primary" class="button-space" (click)="ConfirmResponse(false);">NO</button>
+    </ng-container>
+    <ng-template #alertOnly>
+        <button mat-button color="primary" class="button-space" (click)="CloseAlert();">OK</button>
+    </ng-template>
+  </mat-card-actions>
+</mat-card> -->
+
+<mat-accordion>
+  <h2 mat-dialog-title>{{alertInfo.Header}}</h2>
+  <hr/>
+  <mat-dialog-content>
+        <h3 class="content-style">{{alertInfo.Body}}</h3>
+      <br>
+      <br>
+      <!-- <strong>{{data}}</strong> -->
+    </mat-dialog-content>
+    <hr>
+    <mat-dialog-actions>
+      <div>
+        <ng-container *ngIf="alertInfo.ConfirmPopup; else alertOnly">
+            <button mat-flat-button class="align-self-center" color="warn" class="button-space" (click)="ConfirmResponse(true);">YES</button>&nbsp;&nbsp;
+            <button mat-raised-button class="align-self-center" color="primary" class="button-space" (click)="ConfirmResponse(false);" ngDefaultControl>NO</button>
+        </ng-container>
+        <ng-template #alertOnly>
+            <button mat-button color="primary" class="button-space" (click)="CloseAlert();">OK</button>
+        </ng-template>
+      </div>
+    </mat-dialog-actions>
+</mat-accordion>
