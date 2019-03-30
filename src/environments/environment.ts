@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  ApiBaseUrl: 'http://localhost:56245/api',
+  ApiBaseUrl: 'http://localhost/PM.Api.Dev/api',
   PageSize: 5,
 };
 
