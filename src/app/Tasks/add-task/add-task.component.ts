@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, Optional, Inject } from '@angular/core';
 import { TasksService } from 'src/services/tasks.service';
 import { ViewTasks } from 'src/Model/Tasks/view-tasks.model';
-import * as jQuery from 'jquery';
 import { Task } from 'src/Model/Tasks/task.model';
+import { User } from 'src/Model/Users/user.Model';
+import { Projects } from 'src/Model/Projects/projects.model';
+import { UserService } from 'src/services/user.service';
+import { MatDialogRef, MatSnackBar, MAT_DIALOG_DATA } from '@angular/material';
+import { ProjectService } from 'src/services/project.service';
 
 @Component({
   selector: 'app-add-task',
@@ -12,127 +15,91 @@ import { Task } from 'src/Model/Tasks/task.model';
 })
 export class AddTaskComponent implements OnInit {
   newTask: Task;
-  taskId: number;
   parents: ViewTasks[];
-  pageTitle: string;
-  saveStatus = 0;
+  activeUsers: User[];
+  workInProgress = false;
+  projects: Projects[];
 
   constructor(
-    private route: ActivatedRoute,
-    private _router: Router,
-    private taskServices: TasksService
+    private taskServices: TasksService,
+    private userServices: UserService,
+    private projectServices: ProjectService,
+    private dialogRef: MatDialogRef<AddTaskComponent>,
+    private matSbStatus: MatSnackBar,
+    @Optional() @Inject(MAT_DIALOG_DATA) public taskToEdit?: Task
     ) {
-    this.newTask = new Task();
-  }
-
-  /*
-  Get the Task details from the service
-  */
-  GetTaskInfo(_taskId: number): Task {
-    if (_taskId !== undefined) {
-      // alert('Inside GetTaskInfo for Id: ' + _taskId);
-      this.taskServices.GetTask(_taskId)
-      .subscribe(result => {
-        this.newTask = result;
-      });
-      return this.newTask;
-    }
+      console.log('Incoming data: ' + JSON.stringify(this.taskToEdit));
+      if (taskToEdit === null || taskToEdit === undefined) {
+        // console.log('Initialize for new task...');
+        this.newTask = new Task();
+      } else { this.newTask = taskToEdit; }
+      console.log('Task to work: ' + JSON.stringify(this.newTask));
   }
 
   ngOnInit() {
-    this.route.queryParams
-        .subscribe(p => {
-          if (p.id !== undefined) {
-            this.taskId = p.id;
-            // console.log('local variable value: ', this.taskId);
-            this.newTask = this.GetTaskInfo(this.taskId);
-            console.log('Viewing task - ' + this.taskId);
-            this.pageTitle = 'Editing Task (Task Id -' + p.id + ')';
-          } else {
-            // console.log('No param passed.');
-            this.taskId = 0;
-            this.pageTitle = 'Add Task';
-            this.newTask = new Task();
-          }
-
-          // Get parent tasks for drop down
-          this.GetParentTasks(this.taskId);
-
-          jQuery('[name="successMsg"]').hide();
-          jQuery('[name="errorMsg"]').hide();
-        });
+    this.GetActiveUsersList();
+    this.GetProjectInfo();
+    this.GetParentTasks(this.newTask !== null ? this.newTask.TaskId : 0);
   }
 
   GetParentTasks(_id: number): void {
-    // console.log('Incoming Id for ignoring in parent tasks list: ' + _id);
     this.taskServices.GetParents()
     .subscribe(tasks => {
-      // console.log('Actual parents:' + tasks.length);
       this.parents = tasks.filter(t => {
-        // console.log('taskid:' + (+t.TaskId) + '|Id:' + +_id + '|status:' + (+t.TaskId === +_id));
         return (+(t.TaskId) !== +(_id));
         });
-      // console.log('Parent tasks: ' + JSON.stringify(this.parents) + ' - length: ' + this.parents.length);
     });
   }
 
-  AddTasks(): void {
-    // console.log('Task to add: ' + JSON.stringify(this.newTask));
-    if (this.taskId !== 0) {
-      console.log('Updating existing task..');
-      this.taskServices.UpdateTask(this.taskId, this.newTask)
-      .subscribe(result => {
-        if (result) {
-          // alert('Updated successfully!');
-          this.saveStatus = 1;
-          jQuery('[name="successMsg"]').show();
-          jQuery('[name="successMsg"]').html('Task updated successfully. You will be automatically redirected to View page...');
-          jQuery('[name="successMsg"]').fadeIn(100);
-          setTimeout(() => {
-            this._router.navigate(['/ViewTask']);
-          }, 2000);
-        }
-      });
-    } else {
+  GetProjectInfo() {
+    this.projectServices.GetAll()
+    .subscribe(proj => this.projects = proj);
+  }
+
+  Save(): void {
+    this.workInProgress = true;
+    // console.log('Task to Save: ' + JSON.stringify(this.newTask) + ' and TAskid status : ',this.newTask.TaskId !== 0);
+    if (this.newTask.TaskId === undefined || this.newTask.TaskId === 0) {
       console.log('Adding new task..');
       this.taskServices.AddNewTask(this.newTask)
     .subscribe(status => {
-       if (status) {
+       if (status.TaskId !== 0) {
          // console.log('Saved successfully');
-         // alert('Saved successfully!');
-         this.saveStatus = 1;
-         jQuery('[name="successMsg"]').show();
-         jQuery('[name="successMsg"]').html('Task Created successfully. You will be automatically redirected to View page...');
-         jQuery('[name="successMsg"]').fadeIn(100);
-          setTimeout(() => {
-            this._router.navigate(['/ViewTask']);
-          }, 2000);
+         this.workInProgress = false;
+         this.dialogRef.close(status);
       } else {
         // console.log('Not true - whats the status? ' + status);
       }
     },
     error => {
       console.log('Error: ' + JSON.stringify(<any>error));
-      this.saveStatus = -1;
-      jQuery('[name="successMsg"]').hide();
-      jQuery('[name="errorMsg"]').show();
-          setTimeout(() => {
-            jQuery('[name="errorMsg"]').fadeOut();
-          }, 3000);
-      // window.location.reload();
+      this.workInProgress = false;
     }
     );
-  }
-  }
-
-  ClearOrBack(): void {
-    if (this.taskId !== 0) {
-      // back button
-      this._router.navigate(['/ViewTask']);
     } else {
-      this.newTask = new Task();
-    }
+    console.log('Updating existing task - ' + this.newTask.TaskId);
+      this.taskServices.UpdateTask(this.newTask.TaskId, this.newTask)
+      .subscribe(result => {
+        if (result) {
+          // alert('Updated successfully!');
+          this.workInProgress = false;
+        }
+      },
+      error => {
+        console.log('Add Error: ' + JSON.stringify(<any>error));
+        this.workInProgress = false;
+      });
+  }
   }
 
-  successCallback() { this._router.navigate(['/ViewTask']); }
+  GetActiveUsersList(): void {
+    this.userServices.GetActiveUsers()
+    .subscribe(data => {
+      this.activeUsers = data;
+    });
+  }
+
+  cancelDialog() {
+    this.dialogRef.close(false);
+  }
 }

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HomeComponent } from './home.component';
-import { TasksService } from 'src/services/tasks.service';
 import { of } from 'rxjs';
+import { HealthService } from 'src/services/health.service';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
-  let mockTaskService;
+  let mockHealthService;
 
   beforeEach(async(() => {
-    mockTaskService = jasmine.createSpyObj(TasksService.name, {'GetTasksCount': of(2)});
+    mockHealthService = jasmine.createSpyObj(HealthService.name, {'ServiceAvailable': of(true)});
 
     TestBed.configureTestingModule({
       declarations: [ HomeComponent ],
-      providers: [{provide: TasksService, useValue: mockTaskService }]
+      providers: [{provide: HealthService, useValue: mockHealthService }]
     })
     .compileComponents();
   }));
@@ -26,7 +26,7 @@ describe('HomeComponent', () => {
   });
 
   it('should have a title set', () => {
-    expect(component.title).toBe('Task Manager');
+    expect(component.title).toBe('Project Manager');
   });
 
   it('should create the component', () => {

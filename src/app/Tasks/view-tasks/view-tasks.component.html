@@ -1,155 +1,67 @@
-<nav class="container center">
-    <a class="btn center-block" data-toggle="collapse" href="#searchmenu" role="button" aria-expanded="false" aria-controls="searchmenu">
-        <i class="fa fa-search"></i>&nbsp;&nbsp;
-        Search
-      </a>
-      <div class="collapse" id="searchmenu">
-        <div class="card card-body">
-          <div class="row sm-1">
-            <div class="col">
-              <label class="label sm-2">Task</label>&nbsp;&nbsp;
-              <input class="form-control" type="search" placeholder="Search by Taskname" aria-label="Task" id="txtSByTask" [(ngModel)]="taskNameFilter">
-            </div>
-            <div class="col align-content-center">
-              <label class="label sm-2">Parent</label>&nbsp;&nbsp;
-              <input class="form-control mr-sm-2" type="search" placeholder="Search by Parent task" aria-label="Parent" [(ngModel)]="parentTaskFilter">
-            </div>
-            <div class="col align-content-center">
-              <label class="label sm-2">Priority</label>
-              <input class="form-control col-sm-4" name="searchPrFrom" type="number" min="1" max="30" placeholder="from"
-              aria-label="PriorityFrom" [(ngModel)]="PrFromFilter">&nbsp;&nbsp;
-              <input class="form-control col-sm-4" name="searchPrTo" type="number" max="30" min="1"  placeholder="to"
-              aria-label="PriorityTo" [(ngModel)]="PrToFilter">
-            </div>
-            <div class="col align-content-center">
-                <label class="label sm-2">Date</label>
-                <input class="form-control mr-sm-2" type="date" placeholder="starting date" aria-label="SearchByStartDate" [(ngModel)]="startFilter">&nbsp;&nbsp;
-                <input class="form-control mr-sm-2" type="date" placeholder="Ending date" aria-label="SearchByEndDate" [(ngModel)]="endFilter">
-            </div>
-          </div>
-          <div class="container center align-content-center col-4">
-            <button class="btn btn-outline-success my-2 my-sm-0" autofocus type="submit" (click)="Search();" one>Search</button>
-          </div>
-        </div>
-      </div>
-</nav>
-
-<table class="table table-bordered">
-  <thead class="bg bg-info">
-    <tr>
-      <th>#</th>
-      <th>Task Name</th>
-      <th>Parent</th>
-      <th>Priority</th>
-      <th>Start</th>
-      <th>End</th>
-      <!-- <th>Status</th> -->
-      <th></th>
-    </tr>
-  </thead>
-  <tbody *ngIf="totalTasks > 0; else noData">
-    <ng-container *ngIf="totalTasks > 0 && AllTasks.length > 0; else invalidPaginationView">
-      <tr *ngFor="let task of AllTasks;" [ngClass]="{'disabled': !task.Active}">
-        <td *ngIf="task.Active; else inactiveId">{{task.TaskId}}</td>
-        <ng-template #inactiveId>
-          <td class="disabled text-muted bg-light font-italic">{{task.TaskId}}</td>
-        </ng-template>
-
-        <td *ngIf="task.Active; else inactiveName">{{task.TaskName}}</td>
-        <ng-template #inactiveName>
-          <td class="disabled text-muted bg-light font-italic">{{task.TaskName}}</td>
-        </ng-template>
-
-        <td *ngIf="task.Active; else inactiveParentTask">{{task.ParentTask}}</td>
-        <ng-template #inactiveParentTask>
-          <td class="disabled text-muted bg-light font-italic">{{task.ParentTask}}</td>
-        </ng-template>
-
-        <Td *ngIf="task.Active;else noPriorityText">{{task.Priority}}</Td>
-        <ng-template #noPriorityText>
-          <td class="disabled text-muted bg-light font-italic">{{task.Priority}}</td>
-        </ng-template>
-
-        <Td *ngIf="task.Active; else inactiveStartDate">{{task.StartDate | date: 'longDate'}}</Td>
-        <ng-template #inactiveStartDate><td class="disabled text-muted bg-light font-italic">{{task.StartDate | date: 'longDate'}}</td></ng-template>
-
-        <!-- <Td *ngIf="task.EndDate; else  noEndDate">{{task.EndDate | date:'longDate'}}</Td>
-        <ng-template #noEndDate> -->
-          <td *ngIf="task.Active; else inactiveEndDate">{{task.EndDate | date:'longDate'}}</td>
-          <ng-template #inactiveEndDate><td class="disabled text-muted bg-light font-italic">{{task.EndDate | date:'longDate'}}</td></ng-template>
-        <!-- </ng-template> -->
-
-        <td>
-          <button [ngClass]="task.Active ? 'btn btn-primary mr-2' : 'btn btn-outline-primary mr-2'" (click)="EditTask(task.TaskId);"
-          [disabled]="task.Active ? false : true">Edit</button>
-          <button [ngClass]="task.Active ? 'btn btn-warning ml-2' : 'btn btn-outline-info ml-2'"  (click)="EndTask(task.TaskId);"
-          [disabled]="task.Active ? false : true">End task</button>
-        </td>
-      </tr>
-    </ng-container>
-    <ng-template #invalidPaginationView>
-      <tr>
-        <td colspan="7" class="bg-warning">
-            <div class="container text-center">
-                <i class="fa fa-exclamation-circle"></i>
-              &nbsp;Invalid page referenced. Please check the page you wanted to view.</div>
-        </td>
-      </tr>
-    </ng-template>
-    <tr>
-      <ng-container *ngIf="pageIndex === 1; else elseTemplate">
-          <td colspan=7 class="container medium text-center">
-              Viewing Page: {{pageIndex}} of {{pages}} &nbsp;&nbsp;
-              <a [routerLink]="['/ViewTask', (pageIndex + 1)]" routerLinkActive="router-link-active"><i class="fa fa-arrow-circle-right"></i></a>
-            </td>
+<div style="vertical-align: middle; text-align: center;align-content: center; height: 50px;" [style.display]="loadingInProgress ? 'block' : 'none'" color="warn">
+  <mat-progress-bar mode="query" [style.display]="loadingInProgress ? 'block' : 'none'" color="warn"></mat-progress-bar>
+  <span class="loading-text-style">Loading...</span>
+</div>
+<div class="mat-elevation-z8">
+  <div class="tasks-table-container">
+    <mat-table [dataSource]="AllTasks" matSort matSortActive="StartDate" multiTemplateDataRows
+      matSortDisableClear matSortDirection="desc">
+      <ng-container matColumnDef="TaskName">
+        <mat-header-cell *matHeaderCellDef>Task Name</mat-header-cell>
+        <mat-cell *matCellDef="let task" >{{task.TaskName}}
+        </mat-cell>
       </ng-container>
-      <ng-template #elseTemplate>
-        <ng-container *ngIf="pageIndex === pages; then thenTemplate; else elseTemplate"></ng-container>
-        <ng-template #thenTemplate>
-            <td colspan=7 class="container medium text-center">
-                <a [routerLink]="['/ViewTask', (pageIndex - 1)]" routerLinkActive="router-link-active"><i class="fa fa-arrow-circle-left"></i> </a>
-                &nbsp;&nbsp;Viewing Page: {{pageIndex}} of {{pages}}
-            </td>
-        </ng-template>
-        <ng-template #elseTemplate>
-            <ng-container *ngIf="pageIndex <= pages; else elseTemplate">
-                <td colspan=7 class="container medium text-center">
-                    <a [routerLink]="['/ViewTask', (pageIndex - 1)]" routerLinkActive="router-link-active"><i class="fa fa-arrow-circle-left"></i> </a>
-                    &nbsp;&nbsp;
-                    Viewing Page: {{pageIndex}} of {{pages}}
-                    &nbsp;&nbsp;
-                  <a [routerLink]="['/ViewTask', (pageIndex + 1)]" routerLinkActive="router-link-active"><i class="fa fa-arrow-circle-right"></i></a>
-                </td>
-            </ng-container>
-            <ng-template #elseTemplate>
-                <td colspan=7 class="container medium text-center">
-                    (invalid page reference !)&nbsp;<a [routerLink]="['/ViewTask']" routerLinkActive="router-link-active">Click here</a>
-                    &nbsp;to go back.
-                    &nbsp;&nbsp;
-                </td>
-            </ng-template>
 
-        </ng-template>
-      </ng-template>
+      <ng-container matColumnDef="Parent">
+        <mat-header-cell *matHeaderCellDef>Parent</mat-header-cell>
+        <mat-cell *matCellDef="let task">{{task.ParentTaskName}}</mat-cell>
+      </ng-container>
 
+      <ng-container matColumnDef="UserName">
+          <mat-header-cell *matHeaderCellDef>User Name</mat-header-cell>
+          <mat-cell *matCellDef="let task">{{task.OwnerFullName}}</mat-cell>
+      </ng-container>
 
+      <ng-container matColumnDef="ProjectName">
+          <mat-header-cell *matHeaderCellDef>Project</mat-header-cell>
+          <mat-cell *matCellDef="let task">{{task.ProjectName}}</mat-cell>
+      </ng-container>
 
-      <!-- <td *ngIf="pageIndex === 1" colspan=7 class="container medium text-center">
-          Viewing Page: {{pageIndex}} of {{pages}} &nbsp;&nbsp;
-          <a [routerLink]="['/ViewTask/'+ (pageIndex + 1)]" routerLinkActive="router-link-active"><i class="fa fa-arrow-circle-right"></i></a>
-        </td> -->
+      <ng-container matColumnDef="Priority">
+        <mat-header-cell *matHeaderCellDef>Priority</mat-header-cell>
+        <mat-cell *matCellDef="let task">{{task.Priority}}</mat-cell>
+      </ng-container>
 
-    </tr>
-  </tbody>
-  <ng-template #noData>
-      <tbody>
-        <tr>
-          <td colspan="7" class="bg-default">
-          <div class="container text-center">
-              <i class="fa fa-info-circle"></i>
-            &nbsp;No tasks have been created yet! Would you like to start creating one ?</div>
-      </td>
-    </tr>
-    </tbody>
-    </ng-template>
-</table>
+      <ng-container matColumnDef="StartDate">
+        <mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Start Date</mat-header-cell>
+        <mat-cell *matCellDef="let task">{{task.StartDate | date}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="EndDate">
+        <mat-header-cell *matHeaderCellDef>End Date</mat-header-cell>
+        <mat-cell *matCellDef="let task">{{task.EndDate | date}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="Options">
+          <mat-header-cell *matHeaderCellDef></mat-header-cell>
+          <mat-cell *matCellDef="let task">
+            <button mat-button (click)="EditTask(task);"><mat-icon>edit</mat-icon> EDIT</button>&nbsp;&nbsp;
+            <button mat-button color="accent"><mat-icon>done</mat-icon> DONE</button>
+          </mat-cell>
+        </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayColumns">
+      </mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayColumns;"></mat-row>
+
+    </mat-table>
+  </div>
+  <span style="margin: 5px; float: left;">
+    <button mat-flat-button color="primary" (click)="AddTask();"><mat-icon>add</mat-icon> Add New</button>
+</span>
+<mat-paginator [length]="pages" [pageSize]="10" showFirstLastButtons></mat-paginator>
+</div>
+<!-- <ngx-spinner bdColor = "#333" size = "large" color = "#fff" type = "timer" fullScreen = "false"
+[style.display]="loadingInProgress ? 'block' : 'none'">
+<p style="color: white;font-family: inherit" > Loading... </p>
+</ngx-spinner> -->

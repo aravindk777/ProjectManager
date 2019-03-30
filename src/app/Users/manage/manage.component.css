@@ -1,0 +1,11 @@
+.user-form-window {
+  max-width: 400px;
+  min-width: 300px;
+  /* margin: 5px; */
+   display: flex;
+  flex-direction: column;
+}
+
+.user-form-field {
+  min-width: 300px;
+}

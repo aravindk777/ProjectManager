@@ -60,26 +60,45 @@ describe('ViewTasksComponent', () => {
 
     // ViewTask data
     mockedAllTasksData = [
-      {TaskId: 1, TaskName: 'TestTask-1', ParentTask: '', StartDate: new Date(),
-      EndDate: new Date(), Priority: 10, Status: '', PriorityText: '', Active: false},
-      {TaskId: 2, TaskName: 'TestTask-2', ParentTask: 'TestTask-1', StartDate: new Date(),
-      EndDate: new Date(2019, 3, 31), Priority: 10, Status: '', PriorityText: '', Active: true},
-      {TaskId: 3, TaskName: 'TestTask-3', ParentTask: '', StartDate: new Date(),
-      EndDate: null, Priority: 10, Status: '', PriorityText: '', Active: true},
-      {TaskId: 4, TaskName: 'TestTask-4', ParentTask: 'TestTask-3', StartDate: new Date(),
-      EndDate: null, Priority: 10, Status: '', PriorityText: '', Active: true},
-      {TaskId: 5, TaskName: 'TestTask-5', ParentTask: '', StartDate: new Date(),
-      EndDate: null, Priority: 10, Status: '', PriorityText: '', Active: true},
-      {TaskId: 6, TaskName: 'TestTask-6', ParentTask: 'TestTask-5', StartDate: new Date(2018, 12, 29),
-      EndDate: null, Priority: 10, Status: '', PriorityText: '', Active: true},
-      {TaskId: 7, TaskName: 'TestTask-7', ParentTask: '', StartDate: new Date(),
-      EndDate: null, Priority: 10, Status: '', PriorityText: '', Active: true},
-      {TaskId: 8, TaskName: 'TestTask-8', ParentTask: 'TestTask-7', StartDate: new Date(2018, 9, 1),
-      EndDate: new Date(), Priority: 10, Status: '', PriorityText: '', Active: false},
-      {TaskId: 9, TaskName: 'TestTask-9', ParentTask: '', StartDate: new Date(),
-      EndDate: null, Priority: 10, Status: '', PriorityText: '', Active: true},
-      {TaskId: 10, TaskName: 'TestTask-10', ParentTask: 'TestTask-9', StartDate: new Date(),
-      EndDate: null, Priority: 10, Status: '', PriorityText: '', Active: true}
+      {TaskId: 1, TaskName: 'TestTask-1', ParentTaskName: '', StartDate: new Date(),
+      ParentTaskId: null, TaskOwnerId: '1', OwnerFullName: 'TestUser1', IsParent: true,
+      ProjectId: 1, ProjectName: 'Project1', EndDate: new Date(), Priority: 10, IsActive: false},
+
+      {TaskId: 2, TaskName: 'TestTask-2', ParentTaskName: 'TestTask-1', StartDate: new Date(),
+      ParentTaskId: 1, TaskOwnerId: '1', OwnerFullName: 'TestUser1', IsParent: true,
+      ProjectId: 1, ProjectName: 'Project1', EndDate: new Date(2019, 3, 31), Priority: 10, IsActive: true},
+
+      {TaskId: 3, TaskName: 'TestTask-3', ParentTaskName: '', StartDate: new Date(),
+      ParentTaskId: null, TaskOwnerId: '2', OwnerFullName: 'TestUser2', IsParent: true,
+      ProjectId: 2, ProjectName: 'Project2', EndDate: null, Priority: 10, IsActive: true},
+
+      {TaskId: 4, TaskName: 'TestTask-4', ParentTaskName: 'TestTask-3', StartDate: new Date(),
+      ParentTaskId: 3, TaskOwnerId: '2', OwnerFullName: 'TestUser2', IsParent: true,
+      ProjectId: 1, ProjectName: 'Project2', EndDate: null, Priority: 10, IsActive: true},
+
+      {TaskId: 5, TaskName: 'TestTask-5', ParentTaskName: '', StartDate: new Date(),
+      ParentTaskId: null, TaskOwnerId: '3', OwnerFullName: 'TestUser3', IsParent: true,
+      ProjectId: 3, ProjectName: 'Project3', EndDate: null, Priority: 10, IsActive: true},
+
+      {TaskId: 6, TaskName: 'TestTask-6', ParentTaskName: 'TestTask-5', StartDate: new Date(2018, 12, 29),
+      ParentTaskId: 5, TaskOwnerId: '31', OwnerFullName: 'TestUser3', IsParent: true,
+      ProjectId: 3, ProjectName: 'Project3', EndDate: null, Priority: 10, IsActive: true},
+
+      {TaskId: 7, TaskName: 'TestTask-7', ParentTaskName: '', StartDate: new Date(),
+      ParentTaskId: null, TaskOwnerId: '4', OwnerFullName: 'TestUser4', IsParent: true,
+      ProjectId: 4, ProjectName: 'Project4', EndDate: null, Priority: 10, IsActive: true},
+
+      {TaskId: 8, TaskName: 'TestTask-8', ParentTaskName: 'TestTask-7', StartDate: new Date(2018, 9, 1),
+      ParentTaskId: 7, TaskOwnerId: '4', OwnerFullName: 'TestUser4', IsParent: true,
+      ProjectId: 4, ProjectName: 'Project4', EndDate: new Date(), Priority: 10, IsActive: false},
+
+      {TaskId: 9, TaskName: 'TestTask-9', ParentTaskName: '', StartDate: new Date(),
+      ParentTaskId: null, TaskOwnerId: '5', OwnerFullName: 'TestUser5', IsParent: true,
+      ProjectId: 5, ProjectName: 'Project5', EndDate: null, Priority: 10, IsActive: true},
+
+      {TaskId: 10, TaskName: 'TestTask-10', ParentTaskName: 'TestTask-9', StartDate: new Date(),
+      ParentTaskId: 9, TaskOwnerId: '5', OwnerFullName: 'TestUser5', IsParent: true,
+      ProjectId: 5, ProjectName: 'Project5', EndDate: null, Priority: 10, IsActive: true}
     ];
 
     TestBed.configureTestingModule({
@@ -101,7 +120,7 @@ describe('ViewTasksComponent', () => {
     component = fixture.componentInstance;
     // global arrange
     mockTaskService.GetTasksCount.and.returnValue(of(20));
-    mockTaskService.GetAllTasks.and.returnValue(of(mockedAllTasksData.slice(component.pageIndex - 1, component.pageSize)));
+    mockTaskService.GetAllTasks.and.returnValue(of(mockedAllTasksData));
     fixture.detectChanges();
   });
 
@@ -113,7 +132,7 @@ describe('ViewTasksComponent', () => {
   // - GetTasks method test
   it('should get All the Tasks as mentioned by PageSize value', () => {
     // act
-    component.GetAllTasks(component.pageIndex, component.pageSize);
+    component.GetAllTasks();
     fixture.detectChanges();
     // assert
     expect(component.AllTasks.length).toBe(component.pageSize);
@@ -122,7 +141,7 @@ describe('ViewTasksComponent', () => {
   it('should end a task with success', () => {
     // arrange
     mockTaskService.EndTask.and.returnValue(of(true));
-    mockTaskService.GetAllTasks.and.returnValue(of(mockedAllTasksData.slice(component.pageIndex - 1, component.pageSize)));
+    mockTaskService.GetAllTasks.and.returnValue(of(mockedAllTasksData));
     // act
     const result = component.EndTask(2, true);
     fixture.detectChanges();
@@ -134,8 +153,8 @@ describe('ViewTasksComponent', () => {
   it('should search for a task with parent task named "TestTask"', () => {
     // arrange
     const parentFilterTest = 'TestTask';
-    const filteredMockData = mockedAllTasksData.filter(tasks => tasks.ParentTask.indexOf(parentFilterTest) >= 0);
-    component.parentTaskFilter = parentFilterTest;
+    const filteredMockData = mockedAllTasksData.filter(tasks => tasks.ParentTaskName.indexOf(parentFilterTest) >= 0);
+    // component.parentTaskFilter = parentFilterTest;
     mockTaskService.GetAllTasks.and.returnValue(of(filteredMockData));
     // act
     component.Search();
@@ -148,7 +167,7 @@ describe('ViewTasksComponent', () => {
     // arrange
     const taskNameFilterText = 'TestTask-1';
     const filteredMockData = mockedAllTasksData.filter(tasks => tasks.TaskName.indexOf(taskNameFilterText) >= 0);
-    component.taskNameFilter = taskNameFilterText;
+    // component.taskNameFilter = taskNameFilterText;
     mockTaskService.GetAllTasks.and.returnValue(of(filteredMockData));
     // act
     component.Search();

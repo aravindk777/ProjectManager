@@ -1,44 +1,12 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-</div>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
-    data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <!-- <a class="navbar-brand" href="#">{{ title }}</a> -->
-  <div class="collapse navbar-collapse" id="navbarNavDropdown">
-    <ul class="navbar-nav">
-      <li class="nav-item active">
-        <a class="nav-link" [routerLink]="['/home']">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/Projects']">Projects</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/ViewTask']">Tasks</a>
-      </li>
-      <!-- <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/ViewTask']">View Tasks</a>
-      </li> -->
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/users']">Users</a>
-      </li>
-      <!-- <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown link
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
-      </li> -->
-    </ul>
-  </div>
-</nav>
-
+<mat-toolbar color="primary" class="expanded-toolbar">
+  <span>
+      <button mat-button routerLink="/"><h1>{{title.split(' ')[0]}} <strong>{{title.split(' ')[1]}}</strong></h1></button>
+    </span>
+  <!-- <mat-toolbar-row> -->
+    <button class="menu_button" mat-button [routerLink]="['/home']" routerLinkActive="active"><mat-icon>home</mat-icon> Home</button>
+    <button class="menu_button" mat-button [routerLink]="['/users']"><mat-icon>people</mat-icon> Users</button>
+    <button class="menu_button" mat-button [routerLink]="['/Projects']"><mat-icon>next_week</mat-icon> Projects</button>
+    <button class="menu_button" mat-button [routerLink]="['/Tasks']"><mat-icon>assignment</mat-icon> Tasks</button>
+  <!-- </mat-toolbar-row> -->
+</mat-toolbar>
 <router-outlet></router-outlet>

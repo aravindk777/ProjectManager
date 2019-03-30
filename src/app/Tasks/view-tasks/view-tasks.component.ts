@@ -1,8 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ViewTasks } from 'src/Model/Tasks/view-tasks.model';
-import { Router, ActivatedRoute } from '@angular/router';
 import { TasksService } from 'src/services/tasks.service';
 import { environment } from 'src/environments/environment';
+import { MatPaginator, MatSort, MatDialog, MatDialogConfig } from '@angular/material';
+import { AddTaskComponent } from '../add-task/add-task.component';
+import { Task } from 'src/Model/Tasks/task.model';
+import { AlertInfo } from 'src/Model/common/alert-info.model';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-view-tasks',
@@ -12,98 +16,39 @@ import { environment } from 'src/environments/environment';
 export class ViewTasksComponent implements OnInit {
   AllTasks: ViewTasks[];
   totalTasks: number;
-  pageIndex = 1;
   pageSize: number = environment.PageSize;
   pages: number;
+  displayColumns = ['TaskName', 'Parent', 'Priority', 'UserName', 'ProjectName', 'StartDate', 'EndDate', 'Options'];
+  hoveredIndex: number;
+  loadingInProgress = true;
 
-  // filter vars
-  _taskNameFilter: string;
-  get taskNameFilter(): string { return this._taskNameFilter; }
-  set taskNameFilter(value: string) {
-    this._taskNameFilter = value;
-    // this.AllTasks = value ? this.AllTasks.filter(tasks => tasks.TaskName.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !== -1)
-    // : this.AllTasks;
-    // this.GetAllTasks(0, 0);
-    // console.log('All Tasks count with filter: ' + this.AllTasks.length);
-  }
-
-  _parentTaskFilter: string;
-  get parentTaskFilter(): string { return this._parentTaskFilter; }
-  set parentTaskFilter(value: string) {
-    this._parentTaskFilter = value;
-    // this.AllTasks = value ? this.AllTasks.filter(tasks => tasks.TaskName.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !== -1)
-    // : this.AllTasks;
-    // this.GetAllTasks(0, 0);
-    // console.log('All Tasks count with filter: ' + this.AllTasks.length);
-  }
-
-  _prFromFilter: number;
-  get PrFromFilter(): number { return this._prFromFilter; }
-  set PrFromFilter(value: number) {
-    this._prFromFilter = value;
-    // this.AllTasks = value ? this.AllTasks.filter(tasks => tasks.TaskName.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !== -1)
-    // : this.AllTasks;
-    // this.GetAllTasks(0, 0);
-    // console.log('All Tasks count with filter: ' + this.AllTasks.length);
-  }
-
-  _prToFilter: number;
-  get PrToFilter(): number { return this._prToFilter; }
-  set PrToFilter(value: number) {
-    this._prToFilter = value;
-    // this.AllTasks = value ? this.AllTasks.filter(tasks => tasks.TaskName.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !== -1)
-    // : this.AllTasks;
-    // this.GetAllTasks(0, 0);
-    // console.log('All Tasks count with filter: ' + this.AllTasks.length);
-  }
-
-  _startFilter: Date;
-  get startFilter(): Date { return this._startFilter; }
-  set startFilter(value: Date) {
-    this._startFilter = value;
-    // this.AllTasks = value ? this.AllTasks.filter(tasks => tasks.TaskName.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !== -1)
-    // : this.AllTasks;
-    // this.GetAllTasks(0, 0);
-    // console.log('All Tasks count with filter: ' + this.AllTasks.length);
-  }
-
-  _endFilter: Date;
-  get endFilter(): Date { return this._endFilter; }
-  set endFilter(value: Date) {
-    this._endFilter = value;
-    // this.AllTasks = value ? this.AllTasks.filter(tasks => tasks.TaskName.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !== -1)
-    // : this.AllTasks;
-    // this.GetAllTasks(0, 0);
-    // console.log('All Tasks count with filter: ' + this.AllTasks.length);
-  }
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(
-    private _route: Router,
-    private _taskApiSvc: TasksService,
-    private activatedRoute: ActivatedRoute
+    private taskApiSvc: TasksService,
+    private taskAddEditDialog: MatDialog,
+    // private pageLoadingSpinner: NgxSpinnerService
     ) {
-    this.AllTasks = [];
-    // console.log('view task constructor called');
-    // this.taskNameFilter = 'Test';
    }
 
    Search() {
-     this.GetAllTasks(0, 0, this.taskNameFilter, this.parentTaskFilter,
-      this.PrFromFilter, this.PrToFilter, this.startFilter, this.endFilter);
-     console.log('All Tasks count with filter: ' + this.AllTasks.length);
-
-     // reset to 1st page as index to ensure the search filter is used
-     this.pageIndex = 1;
-     this.EvaluatePagination(this.AllTasks.length);
-   }
-
-   EvaluatePagination(totalRecords: number) {
-     this.pages = Math.ceil(totalRecords / this.pageSize);
-     console.log('pages available to view: ' + this.pages);
+    //  this.GetAllTasks(0, 0, this.taskNameFilter, this.parentTaskFilter,
+    //   this.PrFromFilter, this.PrToFilter, this.startFilter, this.endFilter);
    }
 
   ngOnInit() {
+    // this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+
+    // merge(this.sort.sortChange, this.paginator.page)
+    // .pipe(
+    //   startWith({}),
+    //   switchMap(() => {
+
+    //   })
+    // );
     // Get page size
+    /*
     this._taskApiSvc.GetTasksCount()
     .subscribe(result => {
       this.totalTasks = result;
@@ -116,9 +61,12 @@ export class ViewTasksComponent implements OnInit {
       this.pageIndex = +params['page'] || 1;
       console.log('Page index is ' + this.pageIndex + ' and PageSize: ' + this.pageSize);
       this.GetAllTasks(this.pageIndex, this.pageSize);
-    });
+    });*/
+    this.loadingInProgress = true;
+    this.GetAllTasks();
   }
 
+  /*
   GetAllTasks(_pageIndex: number, _recPerPage: number,
     taskFilter = '', parentNameFilter = '', prFrom = 0, prTo = 0,
     startDtFilter: Date = null, endDtFilter: Date = null) {
@@ -136,25 +84,64 @@ export class ViewTasksComponent implements OnInit {
       },
       error => console.log('Error: ' + error)
     );
+  }*/
+
+  public GetAllTasks() {
+    // this.pageLoadingSpinner.show();
+    this.loadingInProgress = true;
+    this.taskApiSvc.GetAllTasks()
+    .subscribe(result => {
+      this.AllTasks = result;
+      this.pages = result.length;
+      this.loadingInProgress = false;
+      // this.pageLoadingSpinner.hide();
+    });
   }
 
-  EditTask(TaskId: number): void {
-    // alert('You are about to edit the Task with the ID: ' + TaskId);
-    this._route.navigate(['/AddTask'], {queryParams: {id: TaskId}});
+  AddTask() {
+    const diagRef = this.taskAddEditDialog.open(AddTaskComponent, this.DialogSettings());
+    diagRef.afterClosed().subscribe(data => {
+      console.log('status after TaskDialog closed: ' + data);
+      if (<boolean>data) {
+        this.GetAllTasks();
+      }
+    });
+  }
+
+  EditTask(editingTask: Task): void {
+    const editDiagRef = this.taskAddEditDialog.open(AddTaskComponent,
+                        this.DialogSettings(editingTask, 'EditTask' + editingTask.TaskId));
+    editDiagRef.afterClosed().subscribe(result => {
+    if (<boolean> result) {
+    this.GetAllTasks();
+    }
+    });
   }
 
   EndTask(TaskId: number, skipConfirmation = false): boolean {
     const confirmation = !skipConfirmation ? confirm('Are you sure ?') : skipConfirmation;
     if (confirmation) {
-      this._taskApiSvc.EndTask(TaskId)
+      this.taskApiSvc.EndTask(TaskId)
       .subscribe(res => {
         if (res) {
           // window.location.reload();
-          this.GetAllTasks(this.pageIndex, this.pageSize);
+          this.GetAllTasks();
         } else { alert('Could not end the task. Please try again later!'); }
       }, err => console.log('Error occured: ' + <any> err));
     }
     return confirmation;
+  }
+
+  DialogSettings(data?: Task | AlertInfo, dialogFor?: string): MatDialogConfig {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.minWidth = '500px';
+    dialogConfig.width = 'auto';
+    dialogConfig.minHeight = '300px';
+    dialogConfig.height = 'auto';
+    dialogConfig.id = dialogFor;
+    dialogConfig.data = data;
+    console.log('dialog data is ' + JSON.stringify(data));
+    return dialogConfig;
   }
 
 }

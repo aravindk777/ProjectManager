@@ -1,0 +1,22 @@
+.project-card {
+  /* width: 250px; */
+  width: 40%;
+  height: 200px;
+  margin: 15px;
+}
+
+.project-card-mini {
+  width: 40%;
+  height: 200px;
+  margin: 15px;
+}
+
+.align-to-end {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: right;
+  align-content: flex-end;
+  width: 60px;
+  margin-bottom: 15px;
+}

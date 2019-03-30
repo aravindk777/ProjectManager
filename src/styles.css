@@ -1,3 +1,73 @@
 /* You can add global styles to this file, and also import other style files */
-@import "~bootstrap/dist/css/bootstrap.min.css";
-@import "~font-awesome/css/font-awesome.min.css";
+@import "~@angular/material/prebuilt-themes/pink-bluegrey.css";
+
+/* body, .body-like-bg {
+  margin: 0;
+  background-color: darkgray;
+  font-family: "Helvetica Neue", sans-serif;
+} */
+
+html, body {
+  margin: 0;
+  height: 100%;
+  /* background-color: $brand-primary; */
+}
+
+.edit-card {
+  /* min-width: 300px; */
+  margin: 15px;
+}
+
+.button-space {
+  margin: 5px;
+}
+
+.snackBarNotifications {
+  background-color: black;
+  margin-top: 40%;
+  color: antiquewhite;
+}
+
+h1, h2, h3, h4 {
+  text-align: center;
+  font-family: "Helvetica Neue", sans-serif;
+}
+
+.vertical-divider {
+  border-top-width: 0;
+  border-right-width: 0px;
+  border-right-style: solid;
+  border-right-color: darkgrey;
+  margin-left: 20x;
+  height: 80%;
+}
+
+.tlbSpacer {
+  margin-left: 20px;
+}
+
+.root-card-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.card-addedit-window {
+  max-width: 600px;
+  min-width: 500px;
+  min-height: 200px;
+  height: auto;
+  /* margin: 5px; */
+  /* display: flex;
+  flex-direction: column; */
+}
+
+.card-field-width {
+  width: 300px;
+}
+
+.loading-text-style {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+

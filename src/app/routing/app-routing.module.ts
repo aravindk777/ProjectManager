@@ -8,8 +8,8 @@ import { ListProjectsComponent } from '../Projects/list-projects/list-projects.c
 
 const routes: Routes = [
   {path: 'AddTask', component: AddTaskComponent},
-  {path: 'ViewTask', component: ViewTasksComponent},
-  {path: 'ViewTask/:page', component: ViewTasksComponent},
+  {path: 'Tasks', component: ViewTasksComponent},
+  {path: 'Tasks/:page', component: ViewTasksComponent},
   {path: 'home', component: HomeComponent},
   {path: 'users', component: ListUserComponent},
   {path: 'Projects', component: ListProjectsComponent},
