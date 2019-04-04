@@ -1,14 +1,15 @@
-.project-card-mini {
-  width: 10%;
+.project-card {
+  /* width: 250px; */
+  /* width: 80%; */
   height: 200px;
   margin: 15px;
 }
 
-.project-card-comp {
-  /* width: 250px; */
-  width: 45%;
+.project-card-mini {
+  width: 20%;
+  height: 200px;
+  margin: 15px;
 }
-
 
 .align-to-end {
   display: flex;

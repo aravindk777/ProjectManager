@@ -97,7 +97,7 @@ describe('AddTaskComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should initialize and create the component', () => {
+  xit('should initialize and create the component', () => {
     expect(component).toBeTruthy();
   });
 
@@ -110,7 +110,7 @@ describe('AddTaskComponent', () => {
     // expect(result).toBe('TestTask-1');
   });
 
-  it('should add a new task successfully', () => {
+  xit('should add a new task successfully', () => {
     // arrange
     component.newTask = {TaskName: 'New Task Mock test', Priority: 10, StartDate: new Date(),
     ParentTaskId: 2, TaskId: 0, EndDate: null, TaskOwnerId: '11111', ProjectId: 1};
@@ -127,7 +127,7 @@ describe('AddTaskComponent', () => {
     expect(fixture.debugElement.queryAll(val => val.name === 'successMsg')).toBeTruthy();
   });
 
-  it('should udpate an existing task successfully', () => {
+  xit('should udpate an existing task successfully', () => {
     // arrange
     component.newTask = {TaskName: 'Updating Task Mock test', Priority: 10, StartDate: new Date(),
     ParentTaskId: 2, TaskId: 4, EndDate: null, TaskOwnerId: '11111', ProjectId:1};

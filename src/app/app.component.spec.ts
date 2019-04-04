@@ -12,6 +12,7 @@ import { ViewTasksComponent } from './Tasks/view-tasks/view-tasks.component';
 import { ListProjectsComponent } from './Projects/list-projects/list-projects.component';
 import { EditProjectComponent } from './Projects/edit-project/edit-project.component';
 import { RunnerModule } from './runner.module';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -32,7 +33,8 @@ describe('AppComponent', () => {
         ListProjectsComponent,
         EditProjectComponent
       ],
-      providers: [{provide: APP_BASE_HREF, useValue: '/'}]
+      providers: [{provide: APP_BASE_HREF, useValue: '/'}],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
   }));
 
