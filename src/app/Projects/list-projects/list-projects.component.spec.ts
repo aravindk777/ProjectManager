@@ -8,13 +8,14 @@ import { Projects } from 'src/Model/Projects/projects.model';
 import { AlertInfo } from 'src/Model/common/alert-info.model';
 import { FormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { EditProjectComponent } from '../edit-project/edit-project.component';
 
 export class MatDialogMock {
   // When the component calls this.dialog.open(...) we'll return an object
   // with an afterClosed method that allows to subscribe to the dialog result observable.
-  open() {
+  public open(inputdata: any) {
     return {
-      afterClosed: (data: boolean) => of({data})
+      afterClosed: () => of({inputdata})
     };
   }
 }
@@ -78,5 +79,58 @@ describe('ListProjectsComponent', () => {
 
   it('should initialize component', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should get all Projects', () => {
+    // act
+    component.GetProjects();
+    // assert
+    expect(component.AllProjects.length).toEqual(mockProjectsList.length);
+  });
+
+  it('should open add New Project component with no predefined name', () => {
+    // arrange
+    const mockAddEditDialogObj = MatDialogMock.prototype;
+    let dialogRef = jasmine.createSpyObj(mockAddEditDialogObj.open.name, ['afterClosed']);
+    dialogRef.afterClosed.and.returnValue(of(true));
+    const getProjectsMethodSpy = spyOn(component, 'GetProjects');
+    // act
+    component.AddNew();
+    dialogRef = mockAddEditDialogObj.open(EditProjectComponent.prototype);
+    const result = dialogRef.afterClosed();
+    // assert
+    expect(dialogRef).toBeTruthy();
+    expect(result).toBeTruthy();
+    expect(getProjectsMethodSpy).toHaveBeenCalled();
+    expect(getProjectsMethodSpy.calls.count()).toEqual(1);
+  });
+
+  it('should open add New Project component with some predefined name', () => {
+    // arrange
+    const mockAddEditDialogObj = MatDialogMock.prototype;
+    component._searchKeyword = 'TestProject';
+    let dialogRef = jasmine.createSpyObj(mockAddEditDialogObj.open.name, ['afterClosed']);
+    dialogRef.afterClosed.and.returnValue(of(true));
+    const getProjectsMethodSpy = spyOn(component, 'GetProjects');
+    // act
+    component.AddNew();
+    dialogRef = mockAddEditDialogObj.open(EditProjectComponent.prototype);
+    const result = dialogRef.afterClosed();
+    // assert
+    expect(dialogRef).toBeTruthy();
+    expect(result).toBeTruthy();
+    expect(getProjectsMethodSpy).toHaveBeenCalled();
+    expect(getProjectsMethodSpy.calls.count()).toEqual(1);
+  });
+
+  it('should allow to search for the Projects', () => {
+    // arrange
+    mockProjectService.Search.and.returnValue(of(mockProjectsList));
+    component._searchKeyword = 'Testproj';
+    // act
+    component.Search(component._searchKeyword);
+    // assert
+    expect(component.AllProjects.length).toEqual(mockProjectsList.length);
+    expect(component.addNewTitleForSearch).toEqual(' ');
   });
 });

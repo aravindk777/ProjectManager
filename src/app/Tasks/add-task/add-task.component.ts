@@ -5,7 +5,7 @@ import { Task } from 'src/Model/Tasks/task.model';
 import { User } from 'src/Model/Users/user.Model';
 import { Projects } from 'src/Model/Projects/projects.model';
 import { UserService } from 'src/services/user.service';
-import { MatDialogRef, MatSnackBar, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ProjectService } from 'src/services/project.service';
 
 @Component({
@@ -25,15 +25,11 @@ export class AddTaskComponent implements OnInit {
     private userServices: UserService,
     private projectServices: ProjectService,
     private dialogRef: MatDialogRef<AddTaskComponent>,
-    private matSbStatus: MatSnackBar,
     @Optional() @Inject(MAT_DIALOG_DATA) public taskToEdit?: Task
     ) {
-      // console.log('Incoming data: ' + JSON.stringify(this.taskToEdit));
       if (taskToEdit === null || taskToEdit === undefined) {
-        // console.log('Initialize for new task...');
         this.newTask = new Task();
       } else { this.newTask = taskToEdit; }
-      // console.log('Task to work: ' + JSON.stringify(this.newTask));
   }
 
   ngOnInit() {

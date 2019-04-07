@@ -67,15 +67,15 @@ export class ListProjectsComponent implements OnInit {
     });
   }
 
-  public GetProjectById(projId: number): Projects {
-    let projectToEdit: Projects;
-    this.projectApi.Get(projId)
-            .subscribe(result => {
-              this.loadingInProgress = false;
-              projectToEdit = result;
-            });
-    return projectToEdit;
-  }
+  // public GetProjectById(projId: number): Projects {
+  //   let projectToEdit: Projects;
+  //   this.projectApi.Get(projId)
+  //           .subscribe(result => {
+  //             this.loadingInProgress = false;
+  //             projectToEdit = result;
+  //           });
+  //   return projectToEdit;
+  // }
 
   public Search(keyword: string) {
     this.loadingInProgress = true;
