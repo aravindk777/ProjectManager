@@ -19,7 +19,7 @@ export class HomeComponent implements OnInit {
       console.log('Service available? ' + result);
     },
     err => {
-      alert('Error occured while calling the API. Check the console logs for details.');
+      alert('Error occur');
       console.log(err);
     });
   }
