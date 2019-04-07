@@ -1,28 +1,36 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ViewTasksComponent } from './view-tasks.component';
 import { FormsModule } from '@angular/forms';
-import { Component, Directive, Input, HostListener, NO_ERRORS_SCHEMA } from '@angular/core';
+import { Component, Directive, Input, HostListener, NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ViewTasks } from 'src/Model/Tasks/view-tasks.model';
 import { environment } from 'src/environments/environment';
 import { of } from 'rxjs';
 import { TasksService } from 'src/services/tasks.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatDialog, MatSnackBar, MatSnackBarModule, MatTableModule, MatInputModule, MatFormFieldModule } from '@angular/material';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { AlertInfo } from 'src/Model/common/alert-info.model';
 
-@Directive({
-  // tslint:disable-next-line:directive-selector
-  selector: '[routerLink]',
-})
-class MockRouterLinkDirective {
-  // tslint:disable-next-line:no-input-rename
-  @Input('routerLink') linkParams: string;
-  navigatedTo: any = null;
-  @HostListener('click') onClick() { this.navigatedTo = this.linkParams; }
+export class MatDialogMock {
+  // When the component calls this.dialog.open(...) we'll return an object
+  // with an afterClosed method that allows to subscribe to the dialog result observable.
+  open(inputData: any) {
+    return {
+      afterClosed: () => of(true)
+    };
+  }
+}
+
+export class MatSnackBarMock {
+  open(msg: any) {
+    return true;
+  }
 }
 
 describe('ViewTasksComponent', () => {
   let component: ViewTasksComponent;
   let fixture: ComponentFixture<ViewTasksComponent>;
-  let mockTaskService, mockActivatedRoute, mockRouter, mockParams;
+  let mockTaskService;
   let mockedAllTasksData: ViewTasks[];
 
   @Component({
@@ -33,15 +41,11 @@ describe('ViewTasksComponent', () => {
   class TestViewTasksComponent {
     AllTasks: ViewTasks[];
     totalTasks: number;
-    pageIndex = 1;
     pageSize: number = environment.PageSize;
     pages: number;
   }
 
   beforeEach(async(() => {
-    // mock the params value
-    mockParams = jasmine.createSpyObj(['page']);
-
     // mock Task Service and methods
     mockTaskService = jasmine.createSpyObj(TasksService.name, [
       'GetTasksCount',
@@ -51,12 +55,6 @@ describe('ViewTasksComponent', () => {
       'GetAllTasks',
       'EndTask'
     ]);
-
-    // mock Activated Route
-    mockActivatedRoute = {params: of(mockParams)}; // {queryParams: {Params: () => 1}};
-
-    // mock Router
-    mockRouter = {navigate: {}};
 
     // ViewTask data
     mockedAllTasksData = [
@@ -102,14 +100,14 @@ describe('ViewTasksComponent', () => {
     ];
 
     TestBed.configureTestingModule({
-      imports: [ FormsModule],
-      declarations: [ ViewTasksComponent, TestViewTasksComponent, MockRouterLinkDirective ],
+      imports: [ FormsModule, MatSnackBarModule, MatTableModule, MatInputModule, MatFormFieldModule, NoopAnimationsModule],
+      declarations: [ ViewTasksComponent, TestViewTasksComponent ],
       providers: [
         {provide: TasksService, useValue: mockTaskService},
-        {provide: ActivatedRoute, useValue: mockActivatedRoute},
-        {provide: Router, useValue: mockRouter}
+        {provide: MatDialog, useClass: MatDialogMock},
+        {provide: MatSnackBar, useClass: MatSnackBarMock}
       ],
-      // schemas: [NO_ERRORS_SCHEMA]
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
     .compileComponents();
   }));
@@ -130,49 +128,47 @@ describe('ViewTasksComponent', () => {
   });
 
   // - GetTasks method test
-  it('should get All the Tasks as mentioned by PageSize value', () => {
+  it('should get All the Tasks', () => {
     // act
     component.GetAllTasks();
     fixture.detectChanges();
     // assert
-    expect(component.AllTasks.length).toBe(component.pageSize);
+    expect(component.AllTasks.length).toBe(mockedAllTasksData.length);
   });
 
   it('should end a task with success', () => {
     // arrange
+    const confirmDialogData = new AlertInfo();
+    confirmDialogData.ConfirmPopup = true;
+    let alertMsg = 'Task will be marked as completed.\n';
+    alertMsg = alertMsg.concat('Are you sure ?');
+    confirmDialogData.Body = alertMsg;
     mockTaskService.EndTask.and.returnValue(of(true));
-    mockTaskService.GetAllTasks.and.returnValue(of(mockedAllTasksData));
+    const addedTaskSpy = spyOn(component, 'GetAllTasks');
     // act
-    const result = component.EndTask(2, true);
+    const diagResult = MatDialogMock.prototype.open(confirmDialogData);
+    component.EndTask(2, false);
     fixture.detectChanges();
     // assert
-    expect(result).toBe(true);
-    console.log('End Task test completed!');
+    expect(addedTaskSpy).toHaveBeenCalled();
+    expect(diagResult).toBeTruthy();
   });
 
-  it('should search for a task with parent task named "TestTask"', () => {
+  it('should open AddDialog for adding a new task', () => {
     // arrange
-    const parentFilterTest = 'TestTask';
-    const filteredMockData = mockedAllTasksData.filter(tasks => tasks.ParentTaskName.indexOf(parentFilterTest) >= 0);
-    // component.parentTaskFilter = parentFilterTest;
-    mockTaskService.GetAllTasks.and.returnValue(of(filteredMockData));
+    const addedTaskSpy = spyOn(component, 'GetAllTasks');
     // act
-    component.Search();
-    fixture.detectChanges();
+    component.AddTask();
     // assert
-    expect(component.AllTasks.length).toBe(5);
+    expect(addedTaskSpy).toHaveBeenCalled();
   });
 
-  it('should search for a task with name "TestTask-1"', () => {
+  it('should open AddDialog for editing an existing task', () => {
     // arrange
-    const taskNameFilterText = 'TestTask-1';
-    const filteredMockData = mockedAllTasksData.filter(tasks => tasks.TaskName.indexOf(taskNameFilterText) >= 0);
-    // component.taskNameFilter = taskNameFilterText;
-    mockTaskService.GetAllTasks.and.returnValue(of(filteredMockData));
+    const updatedTaskSpy = spyOn(component, 'GetAllTasks');
     // act
-    component.Search();
-    fixture.detectChanges();
+    component.EditTask(mockedAllTasksData[0]);
     // assert
-    expect(component.AllTasks.length).toBe(2);
+    expect(updatedTaskSpy).toHaveBeenCalled();
   });
 });

@@ -20,6 +20,7 @@ import { ManageUserComponent } from './Users/manage/manageuser.component';
 import { ListProjectsComponent } from './Projects/list-projects/list-projects.component';
 import { EditProjectComponent } from './Projects/edit-project/edit-project.component';
 import { AlertsComponent } from './common/alerts.component';
+import { ProjectComponent } from './Projects/project/project.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { AlertsComponent } from './common/alerts.component';
     ListUserComponent,
     ListProjectsComponent,
     EditProjectComponent,
-    AlertsComponent
+    AlertsComponent,
+    ProjectComponent
   ],
   imports: [
     FormsModule,

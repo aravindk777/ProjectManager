@@ -5,7 +5,6 @@ import { ProjectService } from 'src/services/project.service';
 import { UserService } from 'src/services/user.service';
 import { User } from 'src/Model/Users/user.Model';
 import { LoggerService } from 'src/services/logger.service';
-import { log } from 'util';
 
 @Component({
   selector: 'app-edit-project',

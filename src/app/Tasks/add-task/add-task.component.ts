@@ -5,7 +5,7 @@ import { Task } from 'src/Model/Tasks/task.model';
 import { User } from 'src/Model/Users/user.Model';
 import { Projects } from 'src/Model/Projects/projects.model';
 import { UserService } from 'src/services/user.service';
-import { MatDialogRef, MatSnackBar, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ProjectService } from 'src/services/project.service';
 
 @Component({
@@ -25,15 +25,11 @@ export class AddTaskComponent implements OnInit {
     private userServices: UserService,
     private projectServices: ProjectService,
     private dialogRef: MatDialogRef<AddTaskComponent>,
-    private matSbStatus: MatSnackBar,
     @Optional() @Inject(MAT_DIALOG_DATA) public taskToEdit?: Task
     ) {
-      console.log('Incoming data: ' + JSON.stringify(this.taskToEdit));
       if (taskToEdit === null || taskToEdit === undefined) {
-        // console.log('Initialize for new task...');
         this.newTask = new Task();
       } else { this.newTask = taskToEdit; }
-      console.log('Task to work: ' + JSON.stringify(this.newTask));
   }
 
   ngOnInit() {
@@ -60,7 +56,6 @@ export class AddTaskComponent implements OnInit {
     this.workInProgress = true;
     // console.log('Task to Save: ' + JSON.stringify(this.newTask) + ' and TAskid status : ',this.newTask.TaskId !== 0);
     if (this.newTask.TaskId === undefined || this.newTask.TaskId === 0) {
-      console.log('Adding new task..');
       this.taskServices.AddNewTask(this.newTask)
     .subscribe(status => {
        if (status.TaskId !== 0) {
@@ -77,16 +72,15 @@ export class AddTaskComponent implements OnInit {
     }
     );
     } else {
-    console.log('Updating existing task - ' + this.newTask.TaskId);
       this.taskServices.UpdateTask(this.newTask.TaskId, this.newTask)
       .subscribe(result => {
         if (result) {
-          // alert('Updated successfully!');
           this.workInProgress = false;
+          this.dialogRef.close(status);
         }
       },
       error => {
-        console.log('Add Error: ' + JSON.stringify(<any>error));
+        // console.log('Add Error: ' + JSON.stringify(<any>error));
         this.workInProgress = false;
       });
   }

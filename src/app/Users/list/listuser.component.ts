@@ -37,7 +37,7 @@ set activeOnly(value: boolean) {
 
   constructor(
     private userApi: UserService,
-    private useraddeditDialog: MatDialog,
+    public useraddeditDialog: MatDialog,
     private alertDialog: MatDialog,
     private notificationBar: MatSnackBar
   ) {
@@ -112,7 +112,6 @@ set activeOnly(value: boolean) {
   public AddUser() {
     const diagRef = this.useraddeditDialog.open(ManageUserComponent, this.DialogSettings());
     diagRef.afterClosed().subscribe(data => {
-      console.log('status after closure: ' + data);
       if (<boolean>data) {
         this.GetAllUsers(this.activeOnly);
       }
@@ -120,10 +119,8 @@ set activeOnly(value: boolean) {
   }
 
   public EditUser(userToEdit: User) {
-    console.log('You selected ${userToEdit.UserId} to edit');
     const diagRef = this.useraddeditDialog.open(ManageUserComponent, this.DialogSettings(userToEdit));
     diagRef.afterClosed().subscribe(data => {
-      console.log('status after closure: ' + data);
       if (<boolean>data) {
         this.GetAllUsers(this.activeOnly);
       }
@@ -145,7 +142,7 @@ set activeOnly(value: boolean) {
     });
   }
 
-  public Search(keyword: string) {
+  public Search(keyword?: string) {
     this.loadingInProgress = true;
     this.userApi.SearchUser(this._searchKeyword || keyword)
     .subscribe(users => {

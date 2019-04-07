@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/02a03d0e-ac6b-42f5-84be-77ab97c98969/resourceGroups/166911_Learning/providers/Microsoft.Web/sites/166911PM",
+    "appService.deploySubpath": "dist\\ProjectManager"
+}

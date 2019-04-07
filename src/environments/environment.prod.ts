@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  ApiBaseUrl: 'http://localhost/ProjectManager/api/',
+  ApiBaseUrl: 'https://166911pmapi.azurewebsites.net/api/',
   PageSize: 5,
 };

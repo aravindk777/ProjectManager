@@ -3,26 +3,31 @@ import { AddTaskComponent } from './add-task.component';
 import { TasksService } from 'src/services/tasks.service';
 import { of } from 'rxjs';
 import { ViewTasks } from 'src/Model/Tasks/view-tasks.model';
-import { Component } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { NO_ERRORS_SCHEMA } from '@angular/compiler/src/core';
-import { By } from '@angular/platform-browser';
 import { Task } from 'src/Model/Tasks/task.model';
+import { UserService } from 'src/services/user.service';
+import { ProjectService } from 'src/services/project.service';
+import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule, MatSliderModule, MatInputModule, MatFormFieldModule } from '@angular/material';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { Projects } from 'src/Model/Projects/projects.model';
+import { User } from 'src/Model/Users/user.Model';
 
 describe('AddTaskComponent', () => {
   let component: AddTaskComponent;
   let fixture: ComponentFixture<AddTaskComponent>;
   let mockTaskService;
-  let mockActivatedRoute;
-  let mockRouter;
-  let mockParams;
-  let testTaskInfo: Task;
+  let mockUserServie;
+  let mockProjectService;
+  let mockProjectsList: Projects[];
   let mockedParentTasks: ViewTasks[];
+  let mockActiveUsers: User[];
+  let mockMatDialogRef: MatDialogRef<TestAddTaskComponent>;
 
   @Component({
     selector: 'app-add-task',
-    template: '<div></div>'
+    template: '<mat-card><mat-form-field><mat-label>Testing Add or Edit Task</mat-label></mat-form-field></mat-card>'
   })
 
   class TestAddTaskComponent {
@@ -31,50 +36,87 @@ describe('AddTaskComponent', () => {
     parents: ViewTasks[];
     pageTitle: string;
     saveStatus = 0;
+    taskToEdit?: Task;
   }
 
   beforeEach(async(() => {
-    // mock the params value
-    mockParams = jasmine.createSpyObj(['id']);
-
     // ViewTask data
     mockedParentTasks = [
-      {TaskId: 1, TaskName: 'TestTask-1', ParentTask: '', StartDate: new Date(),
-      EndDate: new Date(), Priority: 10, Status: '', PriorityText: '', Active: false},
-      {TaskId: 3, TaskName: 'TestTask-3', ParentTask: '', StartDate: new Date(),
-      EndDate: null, Priority: 10, Status: '', PriorityText: '', Active: true},
-      {TaskId: 5, TaskName: 'TestTask-5', ParentTask: '', StartDate: new Date(),
-      EndDate: null, Priority: 10, Status: '', PriorityText: '', Active: true},
-      {TaskId: 7, TaskName: 'TestTask-7', ParentTask: '', StartDate: new Date(),
-      EndDate: null, Priority: 10, Status: '', PriorityText: '', Active: true},
-      {TaskId: 9, TaskName: 'TestTask-9', ParentTask: '', StartDate: new Date(),
-      EndDate: null, Priority: 10, Status: '', PriorityText: '', Active: true}
+      {TaskId: 1, TaskName: 'TestTask-1', ParentTaskName: '', StartDate: new Date(),
+      ParentTaskId: null, TaskOwnerId: '1', OwnerFullName: 'TestUser1', IsParent: true,
+      ProjectId: 1, ProjectName: 'Project1', EndDate: new Date(), Priority: 10, IsActive: false},
+
+      {TaskId: 3, TaskName: 'TestTask-3', ParentTaskName: '', StartDate: new Date(),
+      ParentTaskId: null, TaskOwnerId: '2', OwnerFullName: 'TestUser2', IsParent: true,
+      ProjectId: 2, ProjectName: 'Project2', EndDate: null, Priority: 10, IsActive: true},
+
+      {TaskId: 5, TaskName: 'TestTask-5', ParentTaskName: '', StartDate: new Date(),
+      ParentTaskId: null, TaskOwnerId: '3', OwnerFullName: 'TestUser3', IsParent: true,
+      ProjectId: 3, ProjectName: 'Project3', EndDate: null, Priority: 10, IsActive: true},
+
+      {TaskId: 7, TaskName: 'TestTask-7', ParentTaskName: '', StartDate: new Date(),
+      ParentTaskId: null, TaskOwnerId: '4', OwnerFullName: 'TestUser4', IsParent: true,
+      ProjectId: 4, ProjectName: 'Project4', EndDate: null, Priority: 10, IsActive: true},
+
+      {TaskId: 9, TaskName: 'TestTask-9', ParentTaskName: '', StartDate: new Date(),
+      ParentTaskId: null, TaskOwnerId: '5', OwnerFullName: 'TestUser5', IsParent: true,
+      ProjectId: 5, ProjectName: 'Project5', EndDate: null, Priority: 10, IsActive: true},
+    ];
+
+    // mock Projects
+    mockProjectsList = [
+      {ProjectId: 1, ProjectName: 'TestProj1', ManagerId: '11projU', Priority: 1, ProjectStart: new Date(),
+      ManagerName: 'TestUser1', ProjectEnd: null, IsActive: true},
+      {ProjectId: 2, ProjectName: 'TestProj2', ManagerId: '22projU', Priority: 5, ProjectStart: new Date(2015, 1, 1),
+      ManagerName: 'TestUser2', ProjectEnd: new Date(2019, 1, 1), IsActive: false},
+      {ProjectId: 3, ProjectName: 'TestProj3', ManagerId: '33projU', Priority: 7, ProjectStart: new Date(),
+      ManagerName: 'TestUser3', ProjectEnd: null, IsActive: true},
+      {ProjectId: 4, ProjectName: 'TestProj4', ManagerId: '44projU', Priority: 15, ProjectStart: new Date(2018, 1, 1),
+      ManagerName: 'TestUser4', ProjectEnd: new Date(2020, 1, 1), IsActive: true},
+      {ProjectId: 5, ProjectName: 'TestProj5', ManagerId: '55projU', Priority: 20, ProjectStart: new Date(),
+      ManagerName: 'TestUser5', ProjectEnd: null, IsActive: true},
+      {ProjectId: 6, ProjectName: 'TestProj6', ManagerId: '66projU', Priority: 25, ProjectStart: new Date(2018, 1, 1),
+      ManagerName: 'TestUser6', ProjectEnd: new Date(2019, 1, 1), IsActive: false}
+    ];
+
+    // mock Users
+    mockActiveUsers = [
+      {Id: '11111111', FirstName: 'fUser1FirstName', LastName: 'User1LastName',
+      UserId: 'TestUser1', FullName: 'User1FullName', Active: true },
+      {Id: '22222222', FirstName: 'eUser2FirstName', LastName: 'UserLastName',
+      UserId: 'TestUser2', FullName: 'User2FullName', Active: false },
+      {Id: '33333333', FirstName: 'dUser3FirstName', LastName: 'User3LastName',
+      UserId: 'TestUser3', FullName: 'User3FullName', Active: true },
+      {Id: '44444444', FirstName: 'cUser4FirstName', LastName: 'UserLastName',
+      UserId: 'TestUser4', FullName: 'User4FullName', Active: false },
+      {Id: '55555555', FirstName: 'bUser5FirstName', LastName: 'User5LastName',
+      UserId: 'TestUser5', FullName: 'User5FullName', Active: true },
+      {Id: '66666666', FirstName: 'aUser6FirstName', LastName: 'User6LastName',
+      UserId: 'TestUser6', FullName: 'User6FullName', Active: true },
     ];
 
     // mock Task Service and methods
-    mockTaskService = jasmine.createSpyObj(TasksService.name, [
-      {'GetTasksCount': of(2)},
-      'GetTask',
-      'GetParents',
-      'UpdateTask',
-      'AddNewTask'
-    ]);
+    mockTaskService = jasmine.createSpyObj(TasksService.name, ['GetTask', 'GetParents', 'UpdateTask', 'AddNewTask']);
 
-    // mock Activated Route
-    mockActivatedRoute = {queryParams: of(mockParams)}; // {queryParams: {Params: () => 1}};
+    // mock User service methods
+    mockUserServie = jasmine.createSpyObj(UserService.name, ['GetActiveUsers']);
 
-    // mock Router
-    mockRouter = {navigate: jasmine.createSpy('navigate')};
+    // mock Project Service methods
+    mockProjectService = jasmine.createSpyObj(ProjectService.name, ['GetAll']);
+
+    // mock DialogRef object
+    mockMatDialogRef = jasmine.createSpyObj('dialogRef', ['close']);
 
     TestBed.configureTestingModule({
-      imports: [FormsModule],
       declarations: [ AddTaskComponent, TestAddTaskComponent ],
+      imports: [FormsModule, MatDialogModule, MatSelectModule, MatSliderModule, MatInputModule, MatFormFieldModule, NoopAnimationsModule],
       providers: [
         {provide: TasksService, useValue: mockTaskService},
-        {provide: ActivatedRoute, useValue: mockActivatedRoute},
-        {provide: Router, useValue: mockRouter}
+        {provide: ProjectService, useValue: mockProjectService},
+        {provide: UserService, useValue: mockUserServie},
+        {provide: MatDialogRef, useValue: mockMatDialogRef}
       ],
-      // schemas: [NO_ERRORS_SCHEMA]
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
     .compileComponents();
   }));
@@ -82,66 +124,64 @@ describe('AddTaskComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AddTaskComponent);
     component = fixture.componentInstance;
-    testTaskInfo = {TaskId: 1, TaskName: 'TestTask-1', ParentTaskId: 10, StartDate: new Date(), EndDate: null, Priority: 10, Status: ''};
-    mockTaskService.GetTask.and.returnValue(of(testTaskInfo));
+    mockTaskService.GetParents.and.returnValue(of(mockedParentTasks));
+    mockProjectService.GetAll.and.returnValue(of(mockProjectsList));
+    mockUserServie.GetActiveUsers.and.returnValue(of(mockActiveUsers));
     fixture.detectChanges();
+    console.log(component.parents.length);
   });
 
   it('should initialize and create the component', () => {
+    component.newTask = {TaskId: 0, TaskName: '', TaskOwnerId: null, ParentTaskId: 0,
+                        ProjectId: 0, EndDate: null, Priority: null, StartDate: null};
+    // assert
     expect(component).toBeTruthy();
   });
 
-  it('should call GetTaskInfo method to get the Task details from Service GetTask() method', () => {
+  it('should call Get Active Users List method', () => {
     // act
-    const result = fixture.componentInstance.GetTaskInfo(1);
-
+    fixture.componentInstance.GetActiveUsersList();
     // assert
-    expect(result).toBeTruthy();
-    expect(result.TaskName).toBe('TestTask-1');
+    expect(component.activeUsers.length).toEqual(mockActiveUsers.length);
   });
 
-  it('should add a new task successfully', () => {
-    // arrange
-    component.newTask = {TaskName: 'New Task Mock test', Priority: 10, StartDate: new Date(),
-    ParentTaskId: 2, TaskId: 0, EndDate: null, Status: null};
-    component.taskId = 0;
-    // mockTaskService.UpdateTask.and.returnValue(of(true));
-    mockTaskService.AddNewTask.and.returnValue(of(true));
-    fixture.detectChanges();
-
+  it('should get Projects listing for adding a task under a project', () => {
     // act
-    component.AddTasks();
-
+    component.GetProjectInfo();
     // assert
-    expect(component.saveStatus).toBe(1);
-    expect(fixture.debugElement.queryAll(val => val.name === 'successMsg')).toBeTruthy();
-  });
-
-  it('should udpate an existing task successfully', () => {
-    // arrange
-    component.newTask = {TaskName: 'Updating Task Mock test', Priority: 10, StartDate: new Date(),
-    ParentTaskId: 2, TaskId: 4, EndDate: null, Status: null};
-    component.taskId = 4;
-    mockTaskService.UpdateTask.and.returnValue(of(true));
-    fixture.detectChanges();
-
-    // act
-    component.AddTasks();
-
-    // assert
-    expect(component.saveStatus).toBe(1);
-    expect(fixture.debugElement.queryAll(val => val.name === 'successMsg')).toBeTruthy();
+    expect(component.projects.length).toEqual(mockProjectsList.length);
   });
 
   it('should get Parent tasks only', () => {
     // arrange
-    mockTaskService.GetParents.and.returnValue(of(mockedParentTasks));
-    component.taskId = 2;
+    const testTaskId = 2;
     // act
-    component.GetParentTasks(component.taskId);
-    fixture.detectChanges();
-
+    component.GetParentTasks(testTaskId);
     // assert
-    expect(component.parents.length).toBe(mockedParentTasks.length);
+    expect(component.parents.length).toEqual(mockedParentTasks.length);
+  });
+
+  it('should save a new Task info', () => {
+    // arrange
+    component.newTask = {TaskId: 0, TaskName: 'TestNewTask', Priority: 5, TaskOwnerId: '1122de1',
+                        StartDate: new Date(), EndDate: null, ProjectId: 1, ParentTaskId: 3};
+    const savedNewTask = {TaskId: 11, TaskName: 'TestNewTask', Priority: 5, TaskOwnerId: '1122de1',
+    StartDate: new Date(), EndDate: null, ProjectId: 1, ParentTaskId: 3};
+    mockTaskService.AddNewTask.and.returnValue(of(savedNewTask));
+    // act
+    component.Save();
+    // assert
+    expect(component.workInProgress).toEqual(false);
+  });
+
+  it('should save an existing Task info', () => {
+    // arrange
+    component.newTask = {TaskId: 3, TaskName: 'UpdatedtestTask', Priority: 5, TaskOwnerId: '1122de1',
+                        StartDate: new Date(), EndDate: null, ProjectId: 5, ParentTaskId: 3};
+    mockTaskService.UpdateTask.and.returnValue(of(true));
+    // act
+    component.Save();
+    // assert
+    expect(component.workInProgress).toEqual(false);
   });
 });

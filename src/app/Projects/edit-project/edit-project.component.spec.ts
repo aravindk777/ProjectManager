@@ -1,14 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { EditProjectComponent } from './edit-project.component';
 import { CUSTOM_ELEMENTS_SCHEMA, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatDialogRef, MatSnackBar } from '@angular/material';
+import { MatDialogRef, MatSnackBar, MatSelectModule, MatFormFieldModule, MatSliderModule, MatInputModule } from '@angular/material';
 import { ProjectService } from 'src/services/project.service';
 import { UserService } from 'src/services/user.service';
 import { User } from 'src/Model/Users/user.Model';
-import { of } from 'rxjs';
+import { of, EMPTY } from 'rxjs';
 import { Projects } from 'src/Model/Projects/projects.model';
+import { LoggerService } from 'src/services/logger.service';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+
+export class MatSnackBarMock {
+  open() {
+    return {EMPTY};
+  }
+}
 
 describe('EditProjectComponent', () => {
   let component: EditProjectComponent;
@@ -16,12 +23,13 @@ describe('EditProjectComponent', () => {
   let mockProjectService;
   let mockUserService;
   let mockMatDialogRef: MatDialogRef<EditProjectComponent>;
-  let mockSnackBar: MatSnackBar;
+  let mockSnackBar;
   let mockActiveUsers: User[];
+  let mockLoggerService;
 
   @Component({
     selector: 'app-edit-project',
-    template: '<div><mat-card></mat-card></div>'
+    template: '<div><mat-card><mat-form-field><mat-label>Testing EditProject</mat-label></mat-form-field></mat-card></div>'
   })
 
   class TestEditProjectComponent {
@@ -36,9 +44,6 @@ describe('EditProjectComponent', () => {
     {Id: '66666666', FirstName: 'User6FirstName', LastName: 'User6LastName', UserId: 'TestUser6', FullName: 'User6FullName', Active: true },
   ];
 
-  mockMatDialogRef = jasmine.createSpyObj('dialogRef', ['close']);
-  mockSnackBar = jasmine.createSpyObj('matSbStatus', ['open']);
-
   beforeEach(() => {
     mockUserService = jasmine.createSpyObj(UserService.name, [
       'GetActiveUsers'
@@ -47,18 +52,22 @@ describe('EditProjectComponent', () => {
       'Add',
       'Update'
     ]);
+    mockLoggerService = jasmine.createSpyObj(LoggerService.name, ['LogInformation']);
+    mockMatDialogRef = jasmine.createSpyObj('dialogRef', ['close']);
+    mockSnackBar = jasmine.createSpyObj(MatSnackBar.name, ['open']);
   });
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ EditProjectComponent, TestEditProjectComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      imports: [FormsModule],
+      imports: [FormsModule, MatSelectModule, MatFormFieldModule, MatSliderModule, MatInputModule, NoopAnimationsModule],
       providers: [
+        {provide: LoggerService, useValue: mockLoggerService},
         {provide: UserService, useValue: mockUserService},
         {provide: ProjectService, useValue: mockProjectService},
         {provide: MatDialogRef, useValue: mockMatDialogRef},
-        {provide: MatSnackBar, usevalue: mockSnackBar}
+        {provide: MatSnackBar, useClass: MatSnackBarMock}
       ]
     })
     .compileComponents();
@@ -74,5 +83,38 @@ describe('EditProjectComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should get active users', () => {
+    // act
+    component.GetActiveUsersList();
+    fixture.detectChanges();
+    // assert
+    expect(component.activeUsers.length).toEqual(4);
+  });
+
+  it('should save a new project', () => {
+    // arrange
+    const newProject = {ProjectName: 'TestNewProject', ManagerId: '232adfdf3', Priority: 10, ProjectEnd: null,
+                        ProjectStart: new Date(), IsActive: null, ProjectId: undefined, ManagerName: ''};
+    component.projectToSave = newProject;
+    const savedProject = {ProjectName: 'TestNewProject', ManagerId: '232adfdf3', Priority: 10,
+                          ProjectStart: new Date(), IsActive: true, ProjectId: 10, ManagerName: 'TestUser5'};
+    const result = mockProjectService.Add.and.returnValue(of(savedProject));
+    // act
+    component.Save();
+    // assert
+    expect(result).toBeTruthy();
+  });
+
+  it('should update an existing project', () => {
+    // arrange
+    component.projectToSave = {ProjectName: 'UpdatedNewProject', ManagerId: '232adfdf3', Priority: 15, ProjectEnd: null,
+                                ProjectStart: new Date(), IsActive: null, ProjectId: 10, ManagerName: ''};
+    const result = mockProjectService.Update.and.returnValue(of(true));
+    // act
+    component.Save();
+    // assert
+    expect(result).toBeTruthy();
   });
 });
