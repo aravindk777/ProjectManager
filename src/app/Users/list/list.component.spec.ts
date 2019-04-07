@@ -23,8 +23,6 @@ describe('ListComponent', () => {
   let component: ListUserComponent;
   let fixture: ComponentFixture<ListUserComponent>;
   let mockUserService;
-  let mockMatAddEditDialog, mockAlertDialog;
-  let mockMatDialogRef;
   let mockMatSnackBar: MatSnackBar;
   let mockUsersList: User[];
 
@@ -38,8 +36,6 @@ describe('ListComponent', () => {
   }
 
   beforeEach(async(() => {
-    // mock the Alert component
-    // mockAlertDialog = jasmine.createSpyObj(MatDialog.name, ['open']);
     // mock the MatSnackbar component
     mockMatSnackBar = jasmine.createSpyObj('notificationBar', ['Open']);
     // mock Users List
