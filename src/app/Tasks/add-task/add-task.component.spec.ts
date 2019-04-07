@@ -68,7 +68,7 @@ describe('AddTaskComponent', () => {
       {ProjectId: 1, ProjectName: 'TestProj1', ManagerId: '11projU', Priority: 1, ProjectStart: new Date(),
       ManagerName: 'TestUser1', ProjectEnd: null, IsActive: true},
       {ProjectId: 2, ProjectName: 'TestProj2', ManagerId: '22projU', Priority: 5, ProjectStart: new Date(2015, 1, 1),
-      ManagerName: 'TestUser2', ProjectEnd: new Date(2019,1, 1), IsActive: false},
+      ManagerName: 'TestUser2', ProjectEnd: new Date(2019, 1, 1), IsActive: false},
       {ProjectId: 3, ProjectName: 'TestProj3', ManagerId: '33projU', Priority: 7, ProjectStart: new Date(),
       ManagerName: 'TestUser3', ProjectEnd: null, IsActive: true},
       {ProjectId: 4, ProjectName: 'TestProj4', ManagerId: '44projU', Priority: 15, ProjectStart: new Date(2018, 1, 1),
@@ -76,7 +76,7 @@ describe('AddTaskComponent', () => {
       {ProjectId: 5, ProjectName: 'TestProj5', ManagerId: '55projU', Priority: 20, ProjectStart: new Date(),
       ManagerName: 'TestUser5', ProjectEnd: null, IsActive: true},
       {ProjectId: 6, ProjectName: 'TestProj6', ManagerId: '66projU', Priority: 25, ProjectStart: new Date(2018, 1, 1),
-      ManagerName: 'TestUser6', ProjectEnd: new Date(2019,1, 1), IsActive: false}
+      ManagerName: 'TestUser6', ProjectEnd: new Date(2019, 1, 1), IsActive: false}
     ];
 
     // mock Users

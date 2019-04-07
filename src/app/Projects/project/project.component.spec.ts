@@ -30,7 +30,7 @@ export class MockMatSnackBar {
 describe('ProjectComponent', () => {
   let component: ProjectComponent;
   let fixture: ComponentFixture<ProjectComponent>;
-  let mockProjectService = jasmine.createSpyObj(ProjectService.name, ['GetTasksForProject', 'Delete']);
+  const mockProjectService = jasmine.createSpyObj(ProjectService.name, ['GetTasksForProject', 'Delete']);
   let mockTasks: ViewTasks[];
 
   @Component({
