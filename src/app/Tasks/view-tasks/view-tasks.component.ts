@@ -1,12 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { ViewTasks } from 'src/Model/Tasks/view-tasks.model';
 import { TasksService } from 'src/services/tasks.service';
 import { environment } from 'src/environments/environment';
-import { MatPaginator, MatSort, MatDialog, MatDialogConfig, MatSnackBar } from '@angular/material';
+import { MatPaginator, MatSort, MatDialog, MatDialogConfig, MatSnackBar, MatTableDataSource } from '@angular/material';
 import { AddTaskComponent } from '../add-task/add-task.component';
 import { Task } from 'src/Model/Tasks/task.model';
 import { AlertInfo } from 'src/Model/common/alert-info.model';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { AlertsComponent } from 'src/app/common/alerts.component';
 
 @Component({
@@ -14,14 +13,20 @@ import { AlertsComponent } from 'src/app/common/alerts.component';
   templateUrl: './view-tasks.component.html',
   styleUrls: ['./view-tasks.component.css']
 })
-export class ViewTasksComponent implements OnInit {
+export class ViewTasksComponent implements OnInit, AfterViewInit {
   AllTasks: ViewTasks[];
   totalTasks: number;
-  pageSize: number = environment.PageSize;
-  pages: number;
+  _searchKeyword: string;
+  get searchKeyword(): string {return this._searchKeyword;}
+  set searchKeyword(value: string) {
+    if (value !== '') {
+    this._searchKeyword = value;
+    this.Search(value);
+    } else { this.GetAllTasks(); }
+  }
   displayColumns = ['TaskName', 'Parent', 'Priority', 'UserName', 'ProjectName', 'StartDate', 'EndDate', 'Options'];
-  hoveredIndex: number;
   loadingInProgress = true;
+  taskTableDs: MatTableDataSource<any>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -31,73 +36,30 @@ export class ViewTasksComponent implements OnInit {
     private taskAddEditDialog: MatDialog,
     private confirmationDialog: MatDialog,
     private snackBarStatus: MatSnackBar
-    // private pageLoadingSpinner: NgxSpinnerService
     ) {
    }
 
-   Search() {
-    //  this.GetAllTasks(0, 0, this.taskNameFilter, this.parentTaskFilter,
-    //   this.PrFromFilter, this.PrToFilter, this.startFilter, this.endFilter);
+   Search(searchTxt: string) {
+    this.taskTableDs.filter = searchTxt;
    }
 
   ngOnInit() {
-    // this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
-
-    // merge(this.sort.sortChange, this.paginator.page)
-    // .pipe(
-    //   startWith({}),
-    //   switchMap(() => {
-
-    //   })
-    // );
-    // Get page size
-    /*
-    this._taskApiSvc.GetTasksCount()
-    .subscribe(result => {
-      this.totalTasks = result;
-      console.log('Total records: ' + this.totalTasks);
-      this.EvaluatePagination(this.totalTasks);
-    });
-
-    this.activatedRoute.params
-    .subscribe(params => {
-      this.pageIndex = +params['page'] || 1;
-      console.log('Page index is ' + this.pageIndex + ' and PageSize: ' + this.pageSize);
-      this.GetAllTasks(this.pageIndex, this.pageSize);
-    });*/
-    this.loadingInProgress = true;
     this.GetAllTasks();
   }
 
-  /*
-  GetAllTasks(_pageIndex: number, _recPerPage: number,
-    taskFilter = '', parentNameFilter = '', prFrom = 0, prTo = 0,
-    startDtFilter: Date = null, endDtFilter: Date = null) {
-      // Get all tasks with pagination
-    this._taskApiSvc.GetAllTasks(_pageIndex, _recPerPage, taskFilter, parentNameFilter, prFrom, prTo, startDtFilter, endDtFilter)
-    .subscribe(
-      tasks => {
-        this.AllTasks = tasks;
-        this.AllTasks
-        .forEach(task => {
-          const today = new Date();
-          if (task.EndDate === null || new Date(task.EndDate) >= today) { task.Active = true; } else { task.Active = false; }
-          return task;
-        });
-      },
-      error => console.log('Error: ' + error)
-    );
-  }*/
+  ngAfterViewInit() {
+  }
 
   public GetAllTasks() {
-    // this.pageLoadingSpinner.show();
     this.loadingInProgress = true;
     this.taskApiSvc.GetAllTasks()
     .subscribe(result => {
       this.AllTasks = result;
-      this.pages = result.length;
+      this.taskTableDs = new MatTableDataSource(this.AllTasks);
+      this.taskTableDs.sort = this.sort;
+      this.taskTableDs.paginator = this.paginator;
       this.loadingInProgress = false;
-      // this.pageLoadingSpinner.hide();
+      // this.paginator.length = this.totalPages;
     });
   }
 

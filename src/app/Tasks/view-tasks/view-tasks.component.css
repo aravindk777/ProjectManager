@@ -42,3 +42,7 @@ mat-header-cell {
   border-bottom: 1px solid #111;
   width: 100%;
 }
+
+.mat-buttons-width {
+  width: 50px;
+}
