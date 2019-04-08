@@ -3,33 +3,36 @@
   <span class="loading-text-style">Loading...</span>
 </div>
 <div class="mat-elevation-z8">
+  <mat-form-field style="width: 100%">
+    <input matInput [(ngModel)]="searchKeyword" placeholder="Search..." style="width: 90%;"/>
+  </mat-form-field>
   <div class="tasks-table-container">
-    <mat-table [dataSource]="AllTasks" matSort matSortActive="StartDate" multiTemplateDataRows
-      matSortDisableClear matSortDirection="desc">
+    <mat-table [dataSource]="taskTableDs" matSort matSortActive="StartDate"
+      multiTemplateDataRows  matSortDisableClear matSortDirection="desc">
       <ng-container matColumnDef="TaskName">
-        <mat-header-cell *matHeaderCellDef>Task Name</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Task Name</mat-header-cell>
         <mat-cell *matCellDef="let task" >
           {{task.TaskName}}
         </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="Parent">
-        <mat-header-cell *matHeaderCellDef>Parent</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Parent</mat-header-cell>
         <mat-cell *matCellDef="let task">{{task.ParentTaskName}}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="UserName">
-          <mat-header-cell *matHeaderCellDef>User Name</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header>User Name</mat-header-cell>
           <mat-cell *matCellDef="let task">{{task.OwnerFullName}}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="ProjectName">
-          <mat-header-cell *matHeaderCellDef>Project</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Project</mat-header-cell>
           <mat-cell *matCellDef="let task">{{task.ProjectName}}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="Priority">
-        <mat-header-cell *matHeaderCellDef>Priority</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Priority</mat-header-cell>
         <mat-cell *matCellDef="let task">{{task.Priority}}</mat-cell>
       </ng-container>
 
@@ -39,15 +42,15 @@
       </ng-container>
 
       <ng-container matColumnDef="EndDate">
-        <mat-header-cell *matHeaderCellDef>End Date</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>End Date</mat-header-cell>
         <mat-cell *matCellDef="let task">{{task.EndDate | date}}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="Options">
           <mat-header-cell *matHeaderCellDef></mat-header-cell>
           <mat-cell *matCellDef="let task">
-            <button mat-button (click)="EditTask(task);" [style.display]="task.IsActive ? 'block' : 'none'"><mat-icon>edit</mat-icon> EDIT</button>&nbsp;&nbsp;
-            <button mat-button color="accent" (click)="EndTask(task.TaskId);" [style.display]="task.IsActive ? 'block' : 'none'"><mat-icon>done</mat-icon> DONE</button>
+            <button class="mat-buttons-width" mat-button (click)="EditTask(task);" [style.display]="task.IsActive ? 'block' : 'none'"><mat-icon>edit</mat-icon> EDIT</button>&nbsp;&nbsp;
+            <button class="mat-buttons-width" mat-button color="accent" (click)="EndTask(task.TaskId);" [style.display]="task.IsActive ? 'block' : 'none'"><mat-icon>done</mat-icon> DONE</button>
             <div style="width:100%;flex-wrap: wrap;text-align: right; align-items: flex-end;"><mat-icon [style.display]="!task.IsActive ? 'block' : 'none'">thumb_up</mat-icon></div>
           </mat-cell>
       </ng-container>
@@ -59,9 +62,5 @@
   <span style="margin: 5px; float: left;">
     <button mat-flat-button color="primary" (click)="AddTask();"><mat-icon>add</mat-icon> Add New</button>
 </span>
-<mat-paginator [length]="pages" [pageSize]="pageSize" showFirstLastButtons></mat-paginator>
+<mat-paginator [pageSizeOptions]="[5, 10, 20, 30, 50, 100]" [pageSize]="10" showFirstLastButtons></mat-paginator>
 </div>
-<!-- <ngx-spinner bdColor = "#333" size = "large" color = "#fff" type = "timer" fullScreen = "false"
-[style.display]="loadingInProgress ? 'block' : 'none'">
-<p style="color: white;font-family: inherit" > Loading... </p>
-</ngx-spinner> -->
