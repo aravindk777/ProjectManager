@@ -8,7 +8,7 @@ import {
   MatSidenavModule, MatToolbarModule, MatIconModule, MatButtonModule, MatListModule, MatTableModule,
   MatInputModule, MatCheckboxModule, MatDialogModule, MatProgressSpinnerModule, MatSnackBarModule,
   MatSlideToggleModule, MatProgressBarModule, MatSelectModule, MatSliderModule, MatFormFieldModule,
-  MatPaginatorModule
+  MatPaginatorModule, MatSortModule
 } from '@angular/material';
 
 import { MatExpansionModule} from '@angular/material/expansion';
@@ -21,13 +21,13 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     CommonModule, MatCardModule, MatTableModule, MatButtonModule, MatSidenavModule,
     MatToolbarModule, MatIconModule, MatListModule, MatInputModule, MatFormFieldModule,
     MatCheckboxModule, MatDialogModule, MatProgressSpinnerModule, MatSnackBarModule,
-    FlexLayoutModule, MatSliderModule, MatExpansionModule, MatPaginatorModule,
+    FlexLayoutModule, MatSliderModule, MatExpansionModule, MatPaginatorModule, MatSortModule,
     MatSlideToggleModule, MatProgressBarModule, MatRadioModule, MatSelectModule, NgxSpinnerModule
   ],
   exports: [
     CommonModule, MatCardModule, MatTableModule, MatButtonModule,
     MatSidenavModule, MatToolbarModule, MatIconModule, MatListModule,
-    MatInputModule, MatFormFieldModule, MatCheckboxModule, MatDialogModule,
+    MatInputModule, MatFormFieldModule, MatCheckboxModule, MatDialogModule, MatSortModule,
     MatProgressSpinnerModule, MatSnackBarModule, FlexLayoutModule, MatSliderModule, MatPaginatorModule,
     MatSlideToggleModule, MatProgressBarModule, MatRadioModule, MatSelectModule, MatExpansionModule, NgxSpinnerModule
   ]
